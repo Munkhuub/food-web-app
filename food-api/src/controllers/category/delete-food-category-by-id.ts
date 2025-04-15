@@ -1,3 +1,3 @@
 export const deleteFoodCategoryById = (req, res) => {
-  res.json([{ name: "lol" }]);
+  res.json([{ name: "delete" }]);
 };

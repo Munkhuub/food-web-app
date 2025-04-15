@@ -1,11 +1,15 @@
 import express from "express";
 import foodRouter from "./routes/food.route";
+import { connectToDatabase } from "./database/connect-to-db";
+import categoryRouter from "./routes/category.route";
+
+connectToDatabase();
 
 const app = express();
 
 const port = 3001;
 
-app.use("/food", foodRouter).use("/category", foodRouter);
+app.use("/food", foodRouter).use("/category", categoryRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

@@ -26,7 +26,7 @@ const foodSchema = new Schema({
     required: true,
   },
   status: {
-    type: String,
+    type: Enumerator,
     required: true,
   },
 });

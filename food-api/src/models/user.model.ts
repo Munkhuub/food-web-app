@@ -1,10 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const foodSchema = new Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
+const userSchema = new Schema({
   email: {
     type: String,
     required: true,
@@ -19,6 +15,10 @@ const foodSchema = new Schema({
   },
   address: {
     type: Date,
+    required: true,
+  },
+  role: {
+    type: Enumerator,
     required: true,
   },
   orderedFoods: {
@@ -43,4 +43,4 @@ const foodSchema = new Schema({
   },
 });
 
-export const foodModel = model("food", foodSchema);
+export const userModel = model("user", userSchema);

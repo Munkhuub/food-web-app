@@ -1,22 +1,18 @@
 import { Schema, model } from "mongoose";
 
-const foodSchema = new Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
+const categorySchema = new Schema({
   categoryName: {
-    type: Number,
+    type: String,
     required: true,
   },
   createdAt: {
     type: Date,
     required: true,
   },
-  udatedAt: {
+  updatedAt: {
     type: Date,
     required: true,
   },
 });
 
-export const foodModel = model("food", foodSchema);
+export const categoryModel = model("Category", categorySchema);

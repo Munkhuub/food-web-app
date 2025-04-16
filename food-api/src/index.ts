@@ -9,10 +9,11 @@ const app = express();
 
 const port = 3001;
 
+app.use(express.json());
 app.use("/food", foodRouter).use("/category", categoryRouter);
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("This is home shit");
 });
 
 app.listen(port, () => {

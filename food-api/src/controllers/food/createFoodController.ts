@@ -1,16 +1,17 @@
 import { foodModel } from "../../models/food.model";
 
 export const createFoodController = async (req, res) => {
-  const { foodName, price, image, ingredients, category } = req.body;
+  const { foods } = req.body;
 
-  await foodModel.create({
-    foodName,
-    price,
-    image,
-    ingredients,
-    category,
+  const allFood = foods.map((food) => ({
+    foodName: food.foodName,
+    price: food.price,
+    image: food.image,
+    ingredients: food.ingredients,
+    category: food.category,
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+  }));
+  await foodModel.createCollection(foods);
   return res.status(201).json({ message: "Hool shit nemegdsen" });
 };

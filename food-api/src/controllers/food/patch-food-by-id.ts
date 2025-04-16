@@ -1,3 +1,11 @@
-export const patchFoodById = (req, res) => {
-  res.json([{ name: "update 1" }, { name: "update 2" }]);
+import { foodModel } from "../../models/food.model";
+
+export const patchFoodById = async (req, res) => {
+  const { foodName } = req.body;
+
+  const { id } = req.params;
+
+  const category = await foodModel.findByIdAndUpdate(id, {
+    foodName,
+  });
 };

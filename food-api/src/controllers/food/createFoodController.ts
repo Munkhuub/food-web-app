@@ -12,6 +12,6 @@ export const createFoodController = async (req, res) => {
     createdAt: new Date(),
     updatedAt: new Date(),
   }));
-  await foodModel.createCollection(foods);
+  await foodModel.insertMany(allFood);
   return res.status(201).json({ message: "Hool shit nemegdsen" });
 };

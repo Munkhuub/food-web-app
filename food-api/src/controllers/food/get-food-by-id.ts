@@ -1,3 +1,9 @@
-export const getFoodById = (req, res) => {
-  res.json([{ name: "huushuur shit" }, { name: "buuz shit" }]);
+import { foodModel } from "../../models/food.model";
+
+export const getFoodById = async (req, res) => {
+  const { id } = req.params;
+
+  const food = await foodModel.findByIdAndDelete(id);
+
+  return res.status(200).json({ food });
 };

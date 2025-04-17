@@ -1,16 +1,34 @@
 import { Schema, model } from "mongoose";
 
-const foodSchema = new Schema({
-  _id: {
-    type: String,
+const OrderItemSchema = new Schema({
+  food: {
+    type: Schema.Types.ObjectId,
+    ref: "food",
     required: true,
   },
-  user: {
+  quantity: {
     type: Number,
     required: true,
   },
-  image: {
+});
+const orderSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  totalPrice: {
+    type: Number,
+    required: true,
+  },
+  foodOrderItems: {
+    type: [OrderItemSchema],
+    default: [],
+    required: true,
+  },
+  status: {
     type: String,
+    enum: ["PENDING", "CANCELED", "DELIVERED"],
+    default: "PENDING",
     required: true,
   },
   createdAt: {
@@ -21,14 +39,6 @@ const foodSchema = new Schema({
     type: Date,
     required: true,
   },
-  foodOrderItems: {
-    type: [],
-    required: true,
-  },
-  status: {
-    type: Enumerator,
-    required: true,
-  },
 });
 
-export const foodModel = model("food", foodSchema);
+export const orderModel = model("order", orderSchema);

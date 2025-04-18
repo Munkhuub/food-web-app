@@ -5,12 +5,16 @@ export const putFoodById = async (req, res) => {
 
   const { id } = req.params;
 
-  const food = await foodModel.findByIdAndUpdate(id, {
-    foodName,
-    price,
-    image,
-    ingredients,
-    category,
-  });
-  return res.status(200).json({ food });
+  try {
+    const food = await foodModel.findByIdAndUpdate(id, {
+      foodName,
+      price,
+      image,
+      ingredients,
+      category,
+    });
+    return res.status(200).json({ food });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
 };

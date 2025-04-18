@@ -10,20 +10,22 @@ const userSchema = new Schema({
     required: true,
   },
   phoneNumber: {
-    type: Date,
+    type: String,
     required: true,
   },
   address: {
-    type: Date,
+    type: String,
     required: true,
   },
   role: {
-    type: Enumerator,
-    required: true,
-  },
-  orderedFoods: {
     type: String,
-    required: true,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  orders: {
+    type: [Schema.Types.ObjectId],
+    ref: "category",
+    default: [],
   },
   ttl: {
     type: Date,
@@ -31,6 +33,7 @@ const userSchema = new Schema({
   },
   isVerified: {
     type: Boolean,
+    default: false,
     required: true,
   },
   createdAt: {

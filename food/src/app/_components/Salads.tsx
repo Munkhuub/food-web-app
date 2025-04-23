@@ -29,11 +29,10 @@ const card = [
 export const Salads = () => {
   const [salads, setSalads] = useState<FoodsType[]>([]);
   const getSalads = async () => {
-    const response = await axios.get("http://localhost:3001/food");
-    const saladFoods = response.data.food.filter(
-      (food: FoodsType) => food.category.categoryName.toLowerCase() === "salads"
+    const response = await axios.get(
+      "http://localhost:3001/food?categoryId=6807438c58747cab008b88ee"
     );
-    setSalads(saladFoods);
+    setSalads(response.data.food);
   };
   useEffect(() => {
     getSalads();

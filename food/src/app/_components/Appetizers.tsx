@@ -11,12 +11,10 @@ export type FoodsType = {
 export const Appetizers = () => {
   const [foods, setFoods] = useState<FoodsType[]>([]);
   const getFoods = async () => {
-    const response = await axios.get("http://localhost:3001/food");
-    const appetizerFoods = response.data.food.filter(
-      (food: FoodsType) =>
-        food.category.categoryName.toLowerCase() === "appetizers"
+    const response = await axios.get(
+      "http://localhost:3001/food?categoryId=6807438c58747cab008b88ed"
     );
-    setFoods(appetizerFoods);
+    setFoods(response.data.food);
   };
   useEffect(() => {
     getFoods();

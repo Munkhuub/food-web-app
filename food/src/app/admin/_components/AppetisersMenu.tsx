@@ -10,6 +10,7 @@ export const AppetizersMenu = () => {
     const response = await axios.get(
       "http://localhost:3001/food?categoryId=6807438c58747cab008b88ed"
     );
+
     setFoods(response.data.food);
   };
   useEffect(() => {

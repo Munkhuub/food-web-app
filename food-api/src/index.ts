@@ -3,6 +3,8 @@ import foodRouter from "./routes/food.route";
 import { connectToDatabase } from "./database/connect-to-db";
 import categoryRouter from "./routes/category.route";
 import cors from "cors";
+import countRouter from "./routes/count.route";
+import countAllRouter from "./routes/countAll.route";
 connectToDatabase();
 
 const app = express();
@@ -11,7 +13,11 @@ const port = 3001;
 
 app.use(express.json());
 app.use(cors());
-app.use("/food", foodRouter).use("/category", categoryRouter);
+app
+  .use("/food", foodRouter)
+  .use("/category", categoryRouter)
+  .use("/count", countRouter)
+  .use("/countAll", countAllRouter);
 
 app.get("/", (req, res) => {
   res.send("This is home shit");

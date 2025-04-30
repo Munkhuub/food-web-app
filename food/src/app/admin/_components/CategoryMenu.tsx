@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { AddCategory } from "./AddCategory";
 import { Badge } from "@/components/ui/badge";
 
-import { Select, SelectContent, SelectGroup } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type CategoryType = {
   _id: string;
@@ -24,6 +31,7 @@ export const CategoryMenu = () => {
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(
     {}
   );
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const getCategories = async () => {
     try {
@@ -92,24 +100,20 @@ export const CategoryMenu = () => {
             {allFoods?.countAllFood}
           </button>
         </div>
-        <Select>
-          <SelectContent>
-            <SelectGroup>
-              {categories.map((category) => (
-                <Badge
-                  key={category._id}
-                  className="py-2 px-4 rounded-full flex gap-2 border-[1px] text-[14px]"
-                  variant="outline"
-                >
-                  {category.categoryName}
-                  <div className="bg-black rounded-full text-xs text-white px-[10px] py-[2px]">
-                    {categoryCounts[category._id] || 0}
-                  </div>
-                </Badge>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        {categories.map((category) => (
+          <div
+            key={category._id}
+            className={`px-4 py-2 bg-white rounded-full flex gap-2 border border-[#E4E4E7] text-[14px] cursor-pointer ${
+              selectedCategory === category._id ? "border-[#EF4444]" : ""
+            }`}
+            onClick={() => setSelectedCategory(category._id)}
+          >
+            {category.categoryName}
+            <span className="bg-black rounded-full text-xs text-white px-[10px] py-[2px]">
+              {categoryCounts[category._id] || 0}
+            </span>
+          </div>
+        ))}
 
         {!showInput && (
           <Button

@@ -1,7 +1,7 @@
-export const Settings = () => {
+export default function Home() {
   return (
     <div>
       <div></div>
     </div>
   );
-};
+}

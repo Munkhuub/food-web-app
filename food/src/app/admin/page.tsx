@@ -1,13 +1,8 @@
 "use client";
 
-import { SaladsMenu } from "./_components/SaladsMenu";
-import { AppetizersMenu } from "./_components/AppetisersMenu";
-import { LunchMenu } from "./_components/LunchMenu";
-import { BeveragesMenu } from "./_components/BeveragesMenu";
 import { CategoryMenu } from "./_components/CategoryMenu";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Category } from "./_components/Category";
 import { CategoryFoods } from "./_components/CategoryFoods";
 
 type CategoryType = {
@@ -32,12 +27,7 @@ export default function Home() {
         <img />
       </div>
       <div className="p-4 rounded-md bg-white flex flex-col gap-2 ">
-        <h4 className="text-xl font-semibold">Dishes category</h4>
-        <div className="flex gap-2">
-          {categories.map(({ _id, categoryName }) => (
-            <Category key={_id} categoryId={_id} categoryName={categoryName} />
-          ))}
-        </div>
+        <CategoryMenu />
         {categories.map(({ _id, categoryName }) => (
           <CategoryFoods
             key={_id}
@@ -46,11 +36,6 @@ export default function Home() {
           />
         ))}
       </div>
-      {/* <CategoryMenu />
-      <AppetizersMenu />
-      <SaladsMenu />
-      <LunchMenu />
-      <BeveragesMenu /> */}
     </div>
   );
 }

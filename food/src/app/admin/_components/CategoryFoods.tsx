@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { FoodCard } from "./FoodCard";
+import { AddFood } from "./AddFood";
 type CategoryFoodsProps = {
   categoryId: string;
   categoryName: string;
@@ -38,7 +39,12 @@ export const CategoryFoods = ({
         {categoryName} ({foods.length})
       </h4>
       <div className="grid grid-cols-4 gap-4">
-        {/* <AddFood key={food._id} food={food}/> */}
+        <AddFood
+          getFoods={getFoods}
+          categoryId={categoryId}
+          categoryName={categoryName}
+        />
+
         {foods.map((food) => (
           <FoodCard key={food._id} food={food} />
         ))}

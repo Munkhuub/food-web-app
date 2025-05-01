@@ -3,51 +3,32 @@ import { useEffect, useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddCategory } from "./AddCategory";
-import { Badge } from "@/components/ui/badge";
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-type CategoryType = {
-  _id: string;
-  categoryName: string;
-};
+import { CategoryType } from "../page";
 
 type allFood = {
   countAllFood: number;
 };
+type CategoryProps = {
+  getCategories: () => void;
+  handleAllDishes: () => void;
+  categories: CategoryType[];
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+  selectedCategory: string;
+};
 
-export const CategoryMenu = () => {
+export const CategoryMenu = ({
+  getCategories,
+  categories,
+  selectedCategory,
+  setSelectedCategory,
+  handleAllDishes,
+}: CategoryProps) => {
   const [showInput, setShowInput] = useState(false);
   const [successMessage, setSuccessMessage] = useState(false);
   const [allFoods, setAllFoods] = useState<allFood>();
-  const [categories, setCategories] = useState<CategoryType[]>([]);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>(
     {}
   );
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-
-  const getCategories = async () => {
-    try {
-      const { data } = await axios.get("http://localhost:3001/category");
-      setCategories(data.categories);
-      console.log(data.categories);
-
-      await fetchAllCategoryCounts(data.categories);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   const getAllFoods = async () => {
     try {
@@ -59,15 +40,11 @@ export const CategoryMenu = () => {
     }
   };
 
-  useEffect(() => {
-    getAllFoods();
-  }, []);
-
-  const fetchAllCategoryCounts = async (cats: CategoryType[]) => {
+  const fetchAllCategoryCounts = async () => {
     try {
       const counts: Record<string, number> = {};
 
-      for (const category of cats) {
+      for (const category of categories) {
         const { data } = await axios.get(
           `http://localhost:3001/count?categoryId=${category._id}`
         );
@@ -75,10 +52,21 @@ export const CategoryMenu = () => {
       }
 
       setCategoryCounts(counts);
+      console.log("Category counts fetched:", counts);
     } catch (error) {
       console.error("Error fetching category counts:", error);
     }
   };
+
+  useEffect(() => {
+    getAllFoods();
+  }, []);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      fetchAllCategoryCounts();
+    }
+  }, [categories]);
 
   useEffect(() => {
     if (successMessage) {
@@ -94,16 +82,23 @@ export const CategoryMenu = () => {
     <div className="p-6 flex flex-col gap-6 bg-white w-full rounded-xl relative">
       <h4 className="text-xl font-semibold">Dishes category</h4>
       <div className="flex gap-3 flex-wrap items-center ">
-        <div className="px-4 py-2 bg-white rounded-full flex gap-2 border-[1px] border-[#E4E4E7] text-[14px]">
+        <div
+          className={`px-4 py-2 bg-white rounded-full flex gap-2 text-[14px] ${
+            selectedCategory === ""
+              ? " border border-[#EF4444]"
+              : " border border-[#E4E4E7]"
+          }`}
+          onClick={handleAllDishes}
+        >
           All dishes
-          <button className="bg-black rounded-full text-xs text-white px-[10px] py-[2px]">
+          <span className="bg-black rounded-full text-xs text-white px-[10px] py-[2px]">
             {allFoods?.countAllFood}
-          </button>
+          </span>
         </div>
         {categories.map((category) => (
           <div
             key={category._id}
-            className={`px-4 py-2 bg-white rounded-full flex gap-2 border border-[#E4E4E7] text-[14px] cursor-pointer ${
+            className={`px-4 py-2 bg-white rounded-full flex gap-2 border  text-[14px] ${
               selectedCategory === category._id ? "border-[#EF4444]" : ""
             }`}
             onClick={() => setSelectedCategory(category._id)}

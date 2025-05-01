@@ -1,16 +1,18 @@
-import { FoodsType } from "@/app/_components/Appetizers";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import axios from "axios";
 import { Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-// import { EditFood } from "./EditFood";
+import { EditFood } from "./EditFood";
+import { FoodsTypeCategory } from "./CategoryFoods";
 
 type FoodCardProps = {
-  food: FoodsType;
+  food: FoodsTypeCategory;
+  categoryId: string;
+  getFoods: () => Promise<void>;
 };
 
-export const FoodCard = ({ food }: FoodCardProps) => {
+export const FoodCard = ({ food, categoryId, getFoods }: FoodCardProps) => {
   return (
     <Card className="w-full p-0">
       <CardContent className="p-4 rounded-[20px] flex flex-col gap-2 relative">
@@ -18,7 +20,7 @@ export const FoodCard = ({ food }: FoodCardProps) => {
           src={food?.image}
           className="h-[129px] w-full object-cover rounded-xl"
         />
-        {/* <EditFood food={food} /> */}
+        <EditFood food={food} categoryId={categoryId} getFoods={getFoods} />
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
             <h3 className="text-[14px] text-[#EF4444] font-semibold">

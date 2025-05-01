@@ -7,7 +7,7 @@ type CategoryFoodsProps = {
   categoryName: string;
 };
 
-export type FoodsType = {
+export type FoodsTypeCategory = {
   _id: string;
   foodName: string;
   ingredients: string;
@@ -20,7 +20,7 @@ export const CategoryFoods = ({
   categoryId,
   categoryName,
 }: CategoryFoodsProps) => {
-  const [foods, setFoods] = useState<FoodsType[]>([]);
+  const [foods, setFoods] = useState<FoodsTypeCategory[]>([]);
   const getFoods = useCallback(async () => {
     const { data } = await axios.get(
       `http://localhost:3001/food?categoryId=${categoryId}`
@@ -46,7 +46,12 @@ export const CategoryFoods = ({
         />
 
         {foods.map((food) => (
-          <FoodCard key={food._id} food={food} />
+          <FoodCard
+            key={food._id}
+            food={food}
+            categoryId={categoryId}
+            getFoods={getFoods}
+          />
         ))}
       </div>
     </div>

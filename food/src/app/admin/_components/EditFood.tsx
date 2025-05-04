@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Pencil, XIcon } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,13 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
+import { useState } from "react";
+import { FoodsTypeCategory } from "./CategoryFoods";
+import { CategorySelect } from "./CategorySelect";
+import { UpdateImage } from "./UpdateImage";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-import { FoodsTypeCategory } from "./CategoryFoods";
-import { CategorySelect } from "./CategorySelect";
-import { Controller } from "react-hook-form";
+import { FoodEditDeleteButton } from "./FoodEditDeleteButton";
 
 type CategoryEditProps = {
   food: FoodsTypeCategory;
@@ -25,11 +26,11 @@ type CategoryEditProps = {
   getFoods: () => Promise<void>;
 };
 
-export const formSchema = z.object({
+const formSchema = z.object({
   foodName: z.string().min(1, "Food name is required"),
   ingredients: z.string().min(1, "Ingredients are required"),
   price: z.number().positive("Price must be positive"),
-  categoryId: z.string(),
+  categoryId: z.string().min(1, "Category is required"),
   image: z.string().url("Valid image URL is required"),
 });
 
@@ -38,15 +39,12 @@ type FormValues = z.infer<typeof formSchema>;
 export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [show, setShow] = useState(false);
+
   const {
     register,
     setValue,
     handleSubmit,
     watch,
-    setError,
-    clearErrors,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -55,10 +53,9 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
       ingredients: food.ingredients,
       price: food.price,
       categoryId: categoryId,
+      image: food.image || "",
     },
   });
-
-  const { image } = watch();
 
   const handleUpdate = async (data: FormValues) => {
     try {
@@ -67,11 +64,11 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
       await axios.put(`http://localhost:3001/food/${food._id}`, {
         ...data,
       });
+
       setOpen(false);
-      console.log("edit", data);
       await getFoods();
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update food:", error);
     } finally {
       setLoading(false);
     }
@@ -81,49 +78,10 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
     setValue("categoryId", value);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (!file) {
-      setError("image", { message: "Image is required" });
-      return;
-    }
-
-    try {
-      // Create a sub-schema just for image validation
-      const imageSchema = z
-        .instanceof(File)
-        .refine(
-          (file) => file.size <= 5000000,
-          "File size must be less than 5MB"
-        )
-        .refine(
-          (file) =>
-            ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-              file.type
-            ),
-          "Only .jpg, .jpeg, .png, and .webp formats are supported"
-        );
-
-      imageSchema.parse(file);
-
-      setValue("image", file);
-
-      clearErrors("image");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const errorMessage = error.errors[0]?.message || "Invalid image";
-        setError("image", { message: errorMessage });
-      }
-    }
-  };
-
-  const handleCancelImage = () => {
-    if (imagePreviewUrl) {
-      URL.revokeObjectURL(imagePreviewUrl);
-      setImagePreviewUrl(null);
-    }
-    setValue("image", undefined as any);
+  const handleImageChange = (imageUrl: string) => {
+    setValue("image", imageUrl, {
+      shouldValidate: true,
+    });
   };
 
   return (
@@ -139,7 +97,7 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
 
       <DialogContent className="sm:max-w-[472px]">
         <DialogHeader>
-          <DialogTitle>Dishes info</DialogTitle>
+          <DialogTitle>Edit Dish Information</DialogTitle>
         </DialogHeader>
 
         <form className="grid gap-4 py-4" onSubmit={handleSubmit(handleUpdate)}>
@@ -150,17 +108,23 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
             >
               Dish name
             </Label>
-            <Input
-              {...register(`foodName`)}
-              className={`w-[288px] ${errors.foodName ? "border-red-500" : ""}`}
-            />
-            {errors.foodName && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.foodName.message}
-              </p>
-            )}
+            <div className="col-span-3">
+              <Input
+                id="foodName"
+                {...register("foodName")}
+                className={`w-[288px] ${
+                  errors.foodName ? "border-red-500" : ""
+                }`}
+              />
+              {errors.foodName && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.foodName.message}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+
+          <div className="grid grid-cols-4 items-start gap-4">
             <Label
               htmlFor="categories"
               className="text-right text-[#71717A] text-xs mb-auto"
@@ -172,28 +136,37 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
                 selectedValue={watch("categoryId")}
                 onValueChange={handleCategoryChange}
               />
+              {errors.categoryId && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.categoryId.message}
+                </p>
+              )}
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-4 w-full">
+
+          <div className="grid grid-cols-4 items-start gap-4">
             <Label
               htmlFor="ingredients"
               className="text-right text-[#71717A] text-xs mb-auto"
             >
               Ingredients
             </Label>
-            <Input
-              id="ingredients"
-              {...register("ingredients")}
-              className={`w-[288px] h-[80px] ${
-                errors.ingredients ? "border-red-500" : ""
-              }`}
-            />
-            {errors.ingredients && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.ingredients.message}
-              </p>
-            )}
+            <div className="col-span-3">
+              <textarea
+                id="ingredients"
+                {...register("ingredients")}
+                className={`w-[288px] h-[80px] border rounded-md p-2 ${
+                  errors.ingredients ? "border-red-500" : "border-input"
+                }`}
+              />
+              {errors.ingredients && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.ingredients.message}
+                </p>
+              )}
+            </div>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label
               htmlFor="price"
@@ -201,66 +174,48 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
             >
               Price
             </Label>
-            <Input
-              id="price"
-              type="number"
-              step="0.01"
-              {...register("price", { valueAsNumber: true })}
-              className={`w-[288px] ${errors.price ? "border-red-500" : ""}`}
-            />
-            {errors.price && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.price.message}
-              </p>
-            )}
+            <div className="col-span-3">
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                {...register("price", { valueAsNumber: true })}
+                className={`w-[288px] ${errors.price ? "border-red-500" : ""}`}
+              />
+              {errors.price && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.price.message}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+
+          <div className="grid grid-cols-4 items-start gap-4">
             <Label
               htmlFor="image"
               className="text-right text-[#71717A] text-xs mb-auto"
             >
               Image
             </Label>
-
-            {!show && (
-              <Input
-                id="image"
-                type="file"
-                {...register("image")}
-                className={`w-[288px] h-[116px] ${
-                  errors.image ? "border-red-500" : ""
-                }`}
-              />
-            )}
-
-            {/* {show && (
-              <div className="w-[288px] h-[116px] relative">
-                <img
-                  // src={imagePreviewUrl}
-                  className="w-full h-full object-cover"
-                  alt="Food preview"
-                />
-                <Button
-                  type="button"
-                  onClick={handleCancelImage}
-                  className="z-20 rounded-full absolute top-2 right-2 bg-white hover:bg-gray-200"
-                  size="icon"
-                >
-                  <XIcon className="size-4" />
-                </Button>
-              </div>
-            )} */}
+            <UpdateImage onChange={handleImageChange} />
             {errors.image && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-sm mt-1 col-start-2 col-span-3">
                 {errors.image.message}
               </p>
             )}
           </div>
-          <DialogFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save changes"}
-            </Button>
-          </DialogFooter>
+          <div className="flex justify-between">
+            <FoodEditDeleteButton food={food} onDelete={getFoods} />
+            <DialogFooter>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="hover:bg-[#DC2626] h-10 mr-6"
+              >
+                {loading ? "Saving..." : "Save changes"}
+              </Button>
+            </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

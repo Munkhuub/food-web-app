@@ -95,7 +95,7 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[472px]">
+      <DialogContent className="sm:max-w-[472px] text-[14px]">
         <DialogHeader>
           <DialogTitle>Edit Dish Information</DialogTitle>
         </DialogHeader>
@@ -131,7 +131,7 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
             >
               Dish category
             </Label>
-            <div className="col-span-3 w-[288px]">
+            <div className="col-span-3 w-[288px] text-xs">
               <CategorySelect
                 selectedValue={watch("categoryId")}
                 onValueChange={handleCategoryChange}
@@ -155,7 +155,7 @@ export const EditFood = ({ food, categoryId, getFoods }: CategoryEditProps) => {
               <textarea
                 id="ingredients"
                 {...register("ingredients")}
-                className={`w-[288px] h-[80px] border rounded-md p-2 ${
+                className={`w-[288px] h-[80px] border rounded-md py-2 px-3 ${
                   errors.ingredients ? "border-red-500" : "border-input"
                 }`}
               />

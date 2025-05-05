@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Cart } from "./_assets/Cart";
 import { Profile } from "./_assets/Profile";
+import DeliveryAddress from "./DeliveryAddress";
+import CartDetail from "./CartDetail";
 
 export const Header = () => {
   return (
@@ -18,16 +20,8 @@ export const Header = () => {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <Button
-          variant="outline"
-          size="icon"
-          className="lg:w-[251px] h-[36px] rounded-full"
-        >
-          <p></p>
-        </Button>
-        <Button variant="outline" size="icon" className="rounded-full">
-          <Cart />
-        </Button>
+        <DeliveryAddress />
+        <CartDetail />
         <Button
           variant="outline"
           size="icon"

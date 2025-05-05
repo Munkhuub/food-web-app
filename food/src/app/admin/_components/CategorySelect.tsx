@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { CategoryType } from "../page";
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 type CategorySelectProps = {
   selectedValue?: string;
@@ -44,12 +45,14 @@ export const CategorySelect = ({
       <SelectTrigger className="w-full">
         <SelectValue placeholder={loading ? "Loading..." : "Select category"} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="text-xs">
         <SelectGroup>
           {categories.length > 0 ? (
             categories.map(({ _id, categoryName }) => (
-              <SelectItem key={_id} value={_id}>
-                {categoryName}
+              <SelectItem key={_id} value={_id} className="text-xs">
+                <Badge className="bg-[#F4F4F5] text-black rounded-full">
+                  {categoryName}
+                </Badge>
               </SelectItem>
             ))
           ) : (

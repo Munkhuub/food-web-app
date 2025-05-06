@@ -1,6 +1,6 @@
 import React from "react";
-import { FoodsType } from "./Appetizers";
 import { AddToCard } from "./AddToCard";
+import { FoodsType } from "./Foods";
 
 type FoodCardProps = {
   food: FoodsType;

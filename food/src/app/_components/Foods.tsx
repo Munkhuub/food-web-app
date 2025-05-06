@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FoodCard } from "./FoodCard";
 
 export type FoodsType = {
+  _id: string;
   foodName: string;
   ingredients: string;
   image: string;
@@ -13,7 +14,7 @@ type AppetizersType = {
   categoryId: string;
   categoryName: string;
 };
-export const Appetizers = ({ categoryId, categoryName }: AppetizersType) => {
+export const Foods = ({ categoryId, categoryName }: AppetizersType) => {
   const [foods, setFoods] = useState<FoodsType[]>([]);
   const getFoods = async () => {
     const response = await axios.get(

@@ -9,27 +9,87 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { Minus, Plus, XIcon } from "lucide-react";
-import { FoodsType } from "./Appetizers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { FoodsType } from "./Foods";
 
 type AddToCardProps = {
   food: FoodsType;
 };
 
+interface CartItem {
+  id: string;
+  foodName: string;
+  price: number;
+  quantity: number;
+  image: string;
+  ingredients: string;
+}
+
 export const AddToCard = ({ food }: AddToCardProps) => {
-  const [addedFood, setAddedFood] = useState(0);
+  const [quantity, setQuantity] = useState(1); // Start with 1 instead of 0
+  const [open, setOpen] = useState(false);
 
   const minusFood = () => {
-    setAddedFood((prev) => (prev > 0 ? prev - 1 : 0));
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1)); // Minimum quantity should be 1
   };
+
   const plusFood = () => {
-    setAddedFood((prev) => prev + 1);
+    setQuantity((prev) => prev + 1);
+  };
+  const addToCart = () => {
+    try {
+      let cart = [];
+      const savedCart = localStorage.getItem("foodCart");
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+      }
+
+      const foodId =
+        food._id || `food-${food.foodName.replace(/\s+/g, "-").toLowerCase()}`;
+
+      const existingItemIndex = cart.findIndex((item) => item.id === foodId);
+
+      if (existingItemIndex >= 0) {
+        cart[existingItemIndex].quantity += quantity;
+      } else {
+        cart.push({
+          id: foodId,
+          foodName: food.foodName,
+          price: food.price,
+          quantity: quantity,
+          image: food.image,
+          ingredients: food.ingredients,
+        });
+      }
+
+      // Save back to localStorage
+      localStorage.setItem("foodCart", JSON.stringify(cart));
+
+      // Create and dispatch a custom event
+      const event = new CustomEvent("cartUpdated");
+      window.dispatchEvent(event);
+
+      // Show toast notification
+      // toast({
+      //   title: "Added to cart",
+      //   description: `${quantity} ${food.foodName}${
+      //     quantity > 1 ? "s" : ""
+      //   } added to your cart.`,
+      // });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      // toast({
+      //   title: "Error",
+      //   description: "Could not add item to cart. Please try again.",
+      //   variant: "destructive",
+      // });
+    }
   };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           className="absolute rounded-full right-9 bottom-[136px] bg-white size-11"
@@ -63,7 +123,7 @@ export const AddToCard = ({ food }: AddToCardProps) => {
                   >
                     <Minus className="text-black" />
                   </Button>
-                  <p className="text-[18px]">{addedFood}</p>
+                  <p className="text-[18px]">{quantity}</p>
                   <Button
                     size="icon"
                     className="rounded-full bg-white border border-black"
@@ -77,6 +137,10 @@ export const AddToCard = ({ food }: AddToCardProps) => {
                 <Button
                   type="submit"
                   className="w-full rounded-full h-11 bg-black"
+                  onClick={() => {
+                    addToCart();
+                    setOpen(false);
+                  }}
                 >
                   Add to cart
                 </Button>

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Cart } from "./_assets/Cart";
-import { Minus, Plus, ShoppingCartIcon, X } from "lucide-react";
+import { MapIcon, Minus, Plus, ShoppingCartIcon, X } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -22,6 +24,10 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { useCart } from "./CartContext";
+import OrderFoodIcon from "./_assets/OrderFoodIcon";
+import OrderDateIcon from "./_assets/OrderDateIcon";
+import OrderMapIcon from "./_assets/OrderMapIcon";
 
 interface CartItem {
   id: string;
@@ -33,112 +39,59 @@ interface CartItem {
 }
 
 const CartDetail = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const loadCartItems = () => {
-      const savedCart = localStorage.getItem("foodCart");
-      if (savedCart) {
-        setCartItems(JSON.parse(savedCart));
-      }
-    };
-
-    loadCartItems();
-
-    const handleStorageEvent = () => {
-      loadCartItems();
-    };
-
-    window.addEventListener("storage", handleStorageEvent);
-
-    window.addEventListener("storage", handleStorageEvent);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageEvent);
-    };
-  }, []);
-
-  const removeItem = (id: string) => {
-    const removedItem = cartItems.find((item) => item.id === id);
-    const updatedCart = cartItems.filter((item) => item.id !== id);
-
-    setCartItems(updatedCart);
-    localStorage.setItem("foodCart", JSON.stringify(updatedCart));
-
-    if (removedItem) {
-      toast(`${removedItem.foodName} removed from your cart.`);
-    }
-  };
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeItem(id);
-      return;
-    }
-
-    const updatedCart = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    );
-
-    setCartItems(updatedCart);
-    localStorage.setItem("foodCart", JSON.stringify(updatedCart));
-  };
-
-  const calculateTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
+  const { cartItems, removeItem, updateQuantity, calculateTotal } = useCart();
+  const [open, setOpen] = useState(false);
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full">
           <Cart />
         </Button>
-      </DialogTrigger>
-      <DialogContent className="bg-[#404040] rounded-l-[20px] rounded-r-none h-screen left-[75.86%]">
-        <DialogHeader>
+      </SheetTrigger>
+      <SheetContent className="bg-[#404040] !max-w-[535px] !w-[535px] p-[32px] border-none rounded-l-[20px]">
+        <SheetHeader className="p-0">
           <div className="flex gap-3 items-center text-white">
             <ShoppingCartIcon className="size-6" />
-            <DialogTitle>Order detail</DialogTitle>
+            <SheetTitle className="text-white">Order detail</SheetTitle>
           </div>
-        </DialogHeader>
+        </SheetHeader>
         <Tabs defaultValue="account">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="account">Cart</TabsTrigger>
             <TabsTrigger value="password">Checkout</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <Card className="p-4">
+            <Card className="p-4 w-[471px] bg-none">
               <CardContent className="p-0 flex flex-col gap-5">
                 <CardHeader className="p-0">
                   <CardTitle>My cart</CardTitle>
                 </CardHeader>
+
                 {cartItems.length > 0 ? (
-                  <>
-                    {cartItems.map((food) => (
+                  <div className=" flex flex-col max-h-80 overflow-auto scroll-auto gap-5">
+                    {cartItems.map((food, index) => (
                       <div
-                        className="flex gap-[10px] max-h-96 overflow-auto"
+                        className={`flex gap-[10px] pt-5 ${
+                          index !== 0 ? "border-t border-gray-300" : ""
+                        }`}
                         key={food.id}
                       >
                         <img
-                          className="w-[124px] h-[120px] rounded-xl"
+                          className="w-[124px] h-[120px] rounded-xl object-cover"
                           src={food.image}
                           alt={food.foodName}
                         />
-
                         <div className="flex flex-col justify-between w-[305px] gap-6">
                           <div className="flex justify-between">
                             <div>
-                              <DialogTitle className="text-[16px]/[28px] text-[#EF4444]">
+                              <SheetTitle className="text-[16px]/[28px] text-[#EF4444]">
                                 {food.foodName}
-                              </DialogTitle>
+                              </SheetTitle>
                               <p className="text-xs/4">{food.ingredients}</p>
                             </div>
                             <button
-                              className="ml-2 p-1 text-red-500 hover:text-red-700"
+                              className="mb-auto mt-[1px] ml-2 p-1 text-red-500 hover:text-red-700"
                               onClick={() => removeItem(food.id)}
                             >
                               <X className="h-4 w-4" />
@@ -175,27 +128,39 @@ const CartDetail = () => {
                         </div>
                       </div>
                     ))}
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">Total:</span>
-                        <span className="font-bold">${calculateTotal()}</span>
-                      </div>
-                    </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="p-6 text-center text-gray-500">
                     Your cart is empty
                   </div>
                 )}
+                <div>
+                  <h3 className="text-xl/[28px] font-semibold">Payment info</h3>
+                  <div className="flex justify-between text-[16px]/[28px]">
+                    <span className="text-[#71717A]">Items</span>
+                    <span className="font-bold">${calculateTotal()}</span>
+                  </div>
+                  <div className="flex justify-between text-[16px]/[28px]">
+                    <span className="text-[#71717A]">Shipping</span>
+                    <span className="font-bold">${calculateTotal()}</span>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-gray-200 text-[16px]/[28px]">
+                    <div className="flex justify-between">
+                      <span className="text-[#71717A]">Total:</span>
+                      <span className="font-bold">${calculateTotal()}</span>
+                    </div>
+                  </div>
+                </div>
+
                 {cartItems.length > 0 && (
-                  <DialogFooter>
+                  <SheetFooter>
                     <Button
                       type="submit"
                       className="w-full rounded-full h-11 bg-black"
                     >
                       Proceed to checkout
                     </Button>
-                  </DialogFooter>
+                  </SheetFooter>
                 )}
               </CardContent>
             </Card>
@@ -203,31 +168,49 @@ const CartDetail = () => {
           <TabsContent value="password">
             <Card>
               <CardHeader>
-                <CardTitle>Checkout</CardTitle>
-                <CardDescription>
-                  Complete your order details here.
-                </CardDescription>
+                <CardTitle>Order history</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Your name" />
-                  </div>
-                  <div>
-                    <Label htmlFor="address">Delivery Address</Label>
-                    <Input id="address" placeholder="Your address" />
+                  <div className="flex flex-col gap-3">
+                    <div className="flex justify-between">
+                      <div className="flex gap-2">
+                        <span>$26.97</span>
+                        <span>(#20156)</span>
+                      </div>
+                      <Button className="bg-white border text-black rounded-full w-[68px] h-[28px] border-[#EF4444] text-xs">
+                        Pending
+                      </Button>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="flex gap-2 items-center">
+                        <OrderFoodIcon />
+                        <p>Foodname</p>
+                      </div>
+                      <div>x1</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="flex gap-2 items-center">
+                        <OrderDateIcon />
+                        <p>Date</p>
+                      </div>
+                      <div>x1</div>
+                    </div>
+                    <div className="flex justify-between">
+                      <div className="flex gap-2 items-center">
+                        <OrderMapIcon />
+                        <p>Address address address address address</p>
+                      </div>
+                      <div>x1</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button className="w-full">Complete Order</Button>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 

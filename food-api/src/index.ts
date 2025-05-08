@@ -5,23 +5,25 @@ import categoryRouter from "./routes/category.route";
 import cors from "cors";
 import countRouter from "./routes/count.route";
 import countAllRouter from "./routes/countAll.route";
+import authRouter from "./routes/auth.route";
+import { config } from "dotenv";
+
+config();
+
+const port = 3001;
+
 connectToDatabase();
 
 const app = express();
 
-const port = 3001;
-
-app.use(express.json());
-app.use(cors());
 app
+  .use(cors())
+  .use(express.json())
   .use("/food", foodRouter)
   .use("/category", categoryRouter)
   .use("/count", countRouter)
-  .use("/countAll", countAllRouter);
-
-app.get("/", (req, res) => {
-  res.send("This is home shit");
-});
+  .use("/countAll", countAllRouter)
+  .use("/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

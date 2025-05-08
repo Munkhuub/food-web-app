@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     address: string
   ) => {
     try {
-      const { data } = await axios.post("http://localhost:3001/auth/signin", {
+      const { data } = await axios.post("http://localhost:3001/auth/signup", {
         name,
         email,
         password,

@@ -8,11 +8,16 @@ import { StepContext } from "../../StepProvider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../../signUp/_components/Step1";
+import { z } from "zod";
 
 type LoginPropsType = {
   handlePrev: () => void;
   handleNext: () => void;
 };
+export const loginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
 export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
   const context = useContext(StepContext);
@@ -24,7 +29,7 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
 
   const { values, setValues } = context;
   const { register, handleSubmit, formState } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
       email: values?.email,
@@ -90,9 +95,9 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
         </Button>
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
-            <p className="text-[#71717A]">Already have an account?</p>
-            <Link href="/login" className="text-[#2563EB]">
-              Log in
+            <p className="text-[#71717A]">Don't have an account?</p>
+            <Link href="/signUp" className="text-[#2563EB]">
+              Sign up
             </Link>
           </div>
         </div>

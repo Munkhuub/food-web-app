@@ -40,7 +40,7 @@ const userSchema = new Schema({
     type: Date,
     required: true,
   },
-  udatedAt: {
+  updatedAt: {
     type: Date,
     required: true,
   },

@@ -13,19 +13,27 @@ import { Step2type } from "../../signUp/_components/Step2";
 type ForgotPassPropsType = {
   handlePrev: () => void;
 };
+const forgotPasswordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const context = useContext(StepContext);
-
   if (!context) {
     throw new Error("Step1 must be used within a StepProvider");
   }
 
   const { values, setValues } = context;
   const { register, handleSubmit, formState } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(forgotPasswordSchema),
     mode: "onChange",
     defaultValues: {
       password: values?.password || "",
@@ -79,22 +87,20 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
             )}
           </div>
 
-          <div className="flex h-[16px] items-center gap-2">
-            <label
-              htmlFor="showPassword"
-              className="text-sm text-[#71717A] flex items-center h-full"
-            >
-              <input
-                type="checkbox"
-                id="showPassword"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setShowPassword(e.target.checked)
-                }
-                className="size-[16px]"
-              />
-            </label>
-            <p> Show password</p>
-          </div>
+          <label
+            htmlFor="showPassword"
+            className="flex items-center gap-2 text-sm"
+          >
+            <input
+              type="checkbox"
+              id="showPassword"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setShowPassword(e.target.checked)
+              }
+              className="size-[16px]"
+            />
+            Show password
+          </label>
         </div>
 
         <Button
@@ -109,9 +115,9 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
         </Button>
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
-            <p className="text-[#71717A]">Already have an account?</p>
-            <Link href="/login" className="text-[#2563EB]">
-              Log in
+            <p className="text-[#71717A]">Don't have an account?</p>
+            <Link href="/signUp" className="text-[#2563EB]">
+              Sign up
             </Link>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext } from "react";
-import { FormValues, StepContext } from "./StepProvider";
+import { FormValues, StepContext } from "../../StepProvider";
 
 type Step1Type = {
   handleNext: () => void;

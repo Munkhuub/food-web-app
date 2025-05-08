@@ -6,17 +6,31 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
-import { FormValues, StepContext } from "./StepProvider";
-import { schema } from "@/app/signUp/_components/Step1";
+import { FormValues, StepContext } from "../../StepProvider";
+import { schema } from "@/app/(auth)/signUp/_components/Step1";
+import { Step2type } from "../../signUp/_components/Step2";
 
-export const Login = ({ handlePrev }: Step2type) => {
+type ForgotPassPropsType = {
+  handlePrev: () => void;
+};
+
+export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const context = useContext(StepContext);
 
+  if (!context) {
+    throw new Error("Step1 must be used within a StepProvider");
+  }
+
+  const { values, setValues } = context;
   const { register, handleSubmit, formState } = useForm({
     resolver: zodResolver(schema),
     mode: "onChange",
-    defaultValues: {},
+    defaultValues: {
+      password: values?.password || "",
+      confirmPassword: values?.confirmPassword || "",
+    },
   });
 
   return (

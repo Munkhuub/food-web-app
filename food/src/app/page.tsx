@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
-import { Header } from "./_components/Header";
-import { MainBanner } from "./_components/MainBanner";
-import { Categories } from "./_components/Categories";
-import { Footer } from "./_components/Footer";
+import { Header } from "./(customer)/_components/Header";
+import { MainBanner } from "./(customer)/_components/MainBanner";
+import { Categories } from "./(customer)/_components/Categories";
+import { Footer } from "./(customer)/_components/Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Foods } from "./_components/Foods";
+import { Foods } from "./(customer)/_components/Foods";
 type CategoryType = {
   categoryName: string;
   _id: string;

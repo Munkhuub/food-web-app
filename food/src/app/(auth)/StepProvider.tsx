@@ -6,7 +6,7 @@ export type FormValues = {
   confirmPassword: string;
 };
 
-type StepContextType = {
+export type StepContextType = {
   values: FormValues;
   setValues: React.Dispatch<React.SetStateAction<FormValues>>;
 };

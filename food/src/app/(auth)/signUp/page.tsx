@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Step1 } from "./_components/Step1";
 import { Step2 } from "./_components/Step2";
-import { StepProvider } from "./_components/StepProvider";
+import { StepProvider } from "../StepProvider";
 
 export default function Home() {
   const [step, setStep] = useState(0);

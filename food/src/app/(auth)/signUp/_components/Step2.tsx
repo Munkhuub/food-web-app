@@ -6,9 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
-import { FormValues, StepContext } from "./StepProvider";
+import { FormValues, StepContext } from "../../StepProvider";
 
-type Step2type = {
+export type Step2type = {
   handlePrev: () => void;
 };
 
@@ -40,7 +40,9 @@ export const Step2 = ({ handlePrev }: Step2type) => {
   }
 
   const { values, setValues } = context;
-  const { register, handleSubmit, formState } = useForm({
+  type Step2FormValues = z.infer<typeof schema>;
+
+  const { register, handleSubmit, formState } = useForm<Step2FormValues>({
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {

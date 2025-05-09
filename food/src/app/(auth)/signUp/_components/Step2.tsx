@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
 import { FormValues, StepContext } from "../../StepProvider";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 export type Step2type = {
   handlePrev: () => void;
@@ -32,7 +33,7 @@ export const schema = z
 export const Step2 = ({ handlePrev }: Step2type) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-
+  const { user, signUp } = useAuth();
   const context = useContext(StepContext);
 
   if (!context) {
@@ -54,11 +55,22 @@ export const Step2 = ({ handlePrev }: Step2type) => {
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
         className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
-        onSubmit={handleSubmit((data) => {
-          const copyOfValues = { ...values };
-          copyOfValues.password = data.password;
-          copyOfValues.confirmPassword = data.confirmPassword;
-          setValues(copyOfValues);
+        onSubmit={handleSubmit(async (data) => {
+          const updatedValues = {
+            ...values,
+            password: data.password,
+          };
+          setValues(updatedValues);
+          try {
+            await signUp({
+              email: values.email,
+              password: data.password,
+            });
+
+            router.push("/");
+          } catch (err) {
+            console.error("Sign-up error:", err);
+          }
         })}
       >
         <Button variant="outline" size="icon" onClick={() => handlePrev()}>

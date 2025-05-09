@@ -7,8 +7,12 @@ import DeliveryAddress from "./DeliveryAddress";
 import CartDetail from "./CartDetail";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useAuth } from "@/app/_providers/AuthProvider";
+import { UserProfile } from "./UserProfile";
 
 export const Header = () => {
+  const { user } = useAuth();
+
   return (
     <div className="w-full h-[68px] bg-[#18181B] px-22 py-3 items-center flex justify-between">
       <div className="flex text-white gap-3 items-center">
@@ -24,15 +28,29 @@ export const Header = () => {
       <div className="flex items-center gap-3">
         <DeliveryAddress />
         <CartDetail />
-        <Link href="/signup" className="text-[#2563EB]">
-          <Button
-            variant="outline"
-            size="icon"
-            className="rounded-full bg-[#EF4444] border-none"
-          >
-            <Profile />
-          </Button>
-        </Link>
+
+        {user ? (
+          <UserProfile />
+        ) : (
+          <div className="flex gap-3">
+            <Link href="/signin">
+              <Button
+                variant="outline"
+                className="rounded-full bg-white border-none text-[#71717A]"
+              >
+                Sign in
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button
+                variant="outline"
+                className="rounded-full bg-white border-none text-[#71717A]"
+              >
+                Sign up
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

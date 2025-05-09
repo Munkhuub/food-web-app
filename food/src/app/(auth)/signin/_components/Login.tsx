@@ -9,6 +9,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../../signup/_components/Step1";
 import { z } from "zod";
+import { useAuth } from "@/app/_providers/AuthProvider";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type LoginPropsType = {
   handlePrev: () => void;
@@ -20,11 +23,13 @@ export const loginSchema = z.object({
 });
 
 export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
+  const router = useRouter();
   const context = useContext(StepContext);
   const [showPassword, setShowPassword] = useState(false);
+  const { user, signIn } = useAuth();
 
   if (!context) {
-    throw new Error("Step1 must be used within a StepProvider");
+    throw new Error("Login must be used within a StepProvider");
   }
 
   const { values, setValues } = context;
@@ -36,30 +41,41 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
       password: values?.password || "",
     },
   });
-
+  console.log("asjdhkj", user);
   return (
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
         className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
-        onSubmit={handleSubmit((data) => {
-          const copyOfValues = { ...values };
-          copyOfValues.email = data.email;
-          setValues(copyOfValues);
-          handleNext();
+        onSubmit={handleSubmit(async (data) => {
+          const updatedValues = {
+            ...values,
+            email: data.email,
+            password: data.password,
+          };
+          setValues(updatedValues);
+          try {
+            await signIn({
+              email: data.email,
+              password: data.password,
+            });
+            router.push("/"); // or homepage
+          } catch (error) {
+            console.error("Login failed", error);
+            toast.error("Invalid email or password");
+          }
         })}
       >
-        <Link href="/">
-          <Button variant="outline" size="icon" onClick={handlePrev}>
-            <ChevronLeft />
-          </Button>
-        </Link>
+        <Button variant="outline" size="icon" onClick={handlePrev}>
+          <ChevronLeft />
+        </Button>
+
         <div>
           <h3 className="text-2xl font-semibold">Log in</h3>
           <p className="text-[#71717A]">
             Log in to enjoy your favorite dishes.
           </p>
         </div>
-        <div>
+        <div className="flex flex-col gap-4">
           <div className="w-full h-9 px-3 py-2 border-[1px] border-[#E4E4E7] rounded-md">
             <input
               type="email"
@@ -81,13 +97,14 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
               {...register("password")}
             />
           </div>
+          <p>Forgot password ?</p>
         </div>
 
         <Button
-          className={`w-full transition-none hover:bg-black hover:text-white ${
+          className={`w-full transition-none hover:bg-black hover:text-black ${
             formState.isValid
               ? "bg-black text-white"
-              : "bg-[#d1d1d1] text-black hover:bg-[#d1d1d1] hover:text-black"
+              : "bg-[#d1d1d1] text-[white] hover:bg-[#d1d1d1] hover:text-black"
           }`}
           type="submit"
         >

@@ -43,7 +43,10 @@ export const AddToCard = ({ food }: AddToCardProps) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[826px]">
         <div className="flex gap-6">
-          <img src={food?.image} className="w-[377px] h-[364px] rounded-xl" />
+          <img
+            src={food?.image}
+            className="w-[377px] h-[364px] rounded-xl object-cover"
+          />
 
           <div className="flex flex-col justify-between">
             <div className="mt-9 flex flex-col gap-3">

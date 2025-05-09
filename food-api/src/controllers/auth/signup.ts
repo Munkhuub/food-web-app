@@ -18,7 +18,6 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       createdAt: new Date(),
       updatedAt: new Date(),
-      ttl: new Date(Date.now() + 3600 * 1000),
     });
 
     const { password: userPassword, ...userWithoutPassword } =

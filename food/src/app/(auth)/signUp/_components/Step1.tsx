@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext } from "react";
 import { FormValues, StepContext } from "../../StepProvider";
+import { AuthProvider, useAuth } from "@/app/_providers/AuthProvider";
 
 type Step1Type = {
   handleNext: () => void;
@@ -26,38 +27,41 @@ export const schema = z.object({
 
 export const Step1 = ({ handleNext }: Step1Type) => {
   const router = useRouter();
-
+  const { user, signUp } = useAuth();
   const context = useContext(StepContext);
 
   if (!context) {
     throw new Error("Step1 must be used within a StepProvider");
   }
-
   const { values, setValues } = context;
-  const { register, handleSubmit, formState } = useForm({
-    resolver: zodResolver(schema),
-    mode: "onChange",
-    defaultValues: {
-      email: values?.email,
-    },
-  });
+  const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>(
+    {
+      resolver: zodResolver(schema),
+      mode: "onChange",
+      defaultValues: {
+        email: values?.email,
+      },
+    }
+  );
 
   return (
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
         className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
         onSubmit={handleSubmit((data) => {
-          const copyOfValues = { ...values };
-          copyOfValues.email = data.email;
-          setValues(copyOfValues);
+          const updatedValues = {
+            ...values,
+            email: data.email,
+          };
+          setValues(updatedValues);
           handleNext();
         })}
       >
-        <Link href="/">
-          <Button variant="outline" size="icon">
-            <ChevronLeft />
-          </Button>
-        </Link>
+        {/* <Link href="/"> */}
+        <Button variant="outline" size="icon">
+          <ChevronLeft />
+        </Button>
+        {/* </Link> */}
         <div>
           <h3 className="text-2xl font-semibold">Create your account</h3>
           <p className="text-[#71717A]">

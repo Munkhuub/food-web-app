@@ -1,10 +1,11 @@
+"use client";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "react";
 
-type User = {
+type user = {
   _id: string;
   name: string;
   email: string;
@@ -12,15 +13,21 @@ type User = {
 };
 
 type AuthContextType = {
-  user?: User;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (
-    name: string,
-    email: string,
-    password: string,
-    phoneNumber: string,
-    address: string
-  ) => Promise<void>;
+  user?: user;
+  signIn: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => Promise<void>;
+  signUp: ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -28,47 +35,57 @@ const AuthContext = createContext({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<user>();
   const [loading, setLoading] = useState(false);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     try {
       const { data } = await axios.post("http://localhost:3001/auth/signin", {
         email,
         password,
       });
+      console.log("SignIn response data:", data); // 🔍 Log response
       localStorage.setItem("token", data.token);
-      setUser(data.User);
+      setUser(data.user);
       router.push("/");
-    } catch (error) {
-      toast.error("Failed to sign in");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      if (error.response?.status === 401) {
+        toast.error("Invalid email or password");
+      } else {
+        toast.error("Something went wrong");
+      }
+      throw error; // re-throw so your form can catch
     }
   };
 
-  const signUp = async (
-    name: string,
-    email: string,
-    password: string,
-    phoneNumber: string,
-    address: string
-  ) => {
+  const signUp = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     try {
       const { data } = await axios.post("http://localhost:3001/auth/signup", {
-        name,
         email,
         password,
-        phoneNumber,
-        address,
       });
       localStorage.setItem("token", data.token);
-      setUser(data.User);
+      setUser(data.user);
     } catch (error) {
       toast.error("Failed to sign up");
     }
   };
 
   const signOut = async () => {
-    localStorage.removeItem("tokeb");
+    localStorage.removeItem("token");
     setUser(undefined);
   };
 
@@ -93,11 +110,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         setLoading(false);
       }
     };
-  });
+    getUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
-      {!loading && children}
+      {loading ? <div>Loading...</div> : children}
     </AuthContext.Provider>
   );
 };

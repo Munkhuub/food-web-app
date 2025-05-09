@@ -4,12 +4,14 @@ import jwt from "jsonwebtoken";
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
+  console.log("Signin attempt:", email);
 
   try {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      res.status(404).json({ message: "Usernam or password invalid" });
+      console.log("User not found"); // 🔍 Log missing user
+      res.status(404).json({ message: "Usernama or password invalid" });
       return;
     }
 
@@ -19,6 +21,7 @@ export const signin = async (req, res) => {
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
 
     if (!isPasswordMatch) {
+      console.log("Password mismatch");
       return res.status(404).json({ message: "Username or password invalid" });
     }
 

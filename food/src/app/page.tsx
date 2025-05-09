@@ -7,12 +7,14 @@ import { Footer } from "./(customer)/_components/Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Foods } from "./(customer)/_components/Foods";
+import { useAuth } from "./_providers/AuthProvider";
 type CategoryType = {
   categoryName: string;
   _id: string;
 };
 export default function Home() {
   const [category, setCategory] = useState<CategoryType[]>([]);
+  const { user } = useAuth();
   const getCategories = async () => {
     const response = await axios.get("http://localhost:3001/category");
     setCategory(response.data.categories);

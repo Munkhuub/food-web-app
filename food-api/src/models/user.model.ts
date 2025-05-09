@@ -11,11 +11,13 @@ const userSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
+    default: "email not added",
   },
   address: {
     type: String,
-    required: true,
+    required: false,
+    default: "address not added",
   },
   role: {
     type: String,
@@ -29,12 +31,12 @@ const userSchema = new Schema({
   },
   ttl: {
     type: Date,
-    required: true,
+    required: false,
   },
   isVerified: {
     type: Boolean,
     default: false,
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,

@@ -10,6 +10,8 @@ import { config } from "dotenv";
 
 config();
 
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
 const port = 3001;
 
 connectToDatabase();

@@ -13,9 +13,9 @@ const OrderMapIcon = () => {
         <path
           d="M6 2L2 4V14L6 12M6 2L10 4M6 2V12M10 4L14 2V12L10 14M10 4V14M10 14L6 12"
           stroke="#09090B"
-          stroke-opacity="0.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeOpacity="0.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

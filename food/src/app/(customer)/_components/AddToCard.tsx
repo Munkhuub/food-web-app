@@ -3,9 +3,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -19,15 +17,6 @@ import { useCart } from "./CartContext";
 type AddToCardProps = {
   food: FoodsType;
 };
-
-interface CartItem {
-  id: string;
-  foodName: string;
-  price: number;
-  quantity: number;
-  image: string;
-  ingredients: string;
-}
 
 export const AddToCard = ({ food }: AddToCardProps) => {
   const [quantity, setQuantity] = useState(1);

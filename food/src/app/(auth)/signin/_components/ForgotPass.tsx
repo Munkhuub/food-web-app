@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
 import { FormValues, StepContext } from "../../StepProvider";
-import { schema } from "@/app/(auth)/signUp/_components/Step1";
-import { Step2type } from "../../signUp/_components/Step2";
+import { schema } from "@/app/(auth)/signup/_components/Step1";
+import { Step2type } from "../../signup/_components/Step2";
 
 type ForgotPassPropsType = {
   handlePrev: () => void;
@@ -116,7 +116,7 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
             <p className="text-[#71717A]">Don't have an account?</p>
-            <Link href="/signUp" className="text-[#2563EB]">
+            <Link href="/signup" className="text-[#2563EB]">
               Sign up
             </Link>
           </div>

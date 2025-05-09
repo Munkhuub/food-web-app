@@ -5,6 +5,8 @@ import { Cart } from "./_assets/Cart";
 import { Profile } from "./_assets/Profile";
 import DeliveryAddress from "./DeliveryAddress";
 import CartDetail from "./CartDetail";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export const Header = () => {
   return (
@@ -22,13 +24,15 @@ export const Header = () => {
       <div className="flex items-center gap-3">
         <DeliveryAddress />
         <CartDetail />
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-full bg-[#EF4444] border-none"
-        >
-          <Profile />
-        </Button>
+        <Link href="/signup" className="text-[#2563EB]">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-[#EF4444] border-none"
+          >
+            <Profile />
+          </Button>
+        </Link>
       </div>
     </div>
   );

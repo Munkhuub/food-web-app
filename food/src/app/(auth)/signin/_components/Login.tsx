@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import { StepContext } from "../../StepProvider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema } from "../../signUp/_components/Step1";
+import { schema } from "../../signup/_components/Step1";
 import { z } from "zod";
 
 type LoginPropsType = {
@@ -96,7 +96,7 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
             <p className="text-[#71717A]">Don't have an account?</p>
-            <Link href="/signUp" className="text-[#2563EB]">
+            <Link href="/signup" className="text-[#2563EB]">
               Sign up
             </Link>
           </div>

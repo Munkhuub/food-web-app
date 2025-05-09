@@ -2,7 +2,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { createContext } from "vm";
+import { createContext } from "react";
 
 type User = {
   _id: string;
@@ -102,4 +102,4 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
-// export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

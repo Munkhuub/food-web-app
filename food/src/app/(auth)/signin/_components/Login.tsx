@@ -27,6 +27,7 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
   const context = useContext(StepContext);
   const [showPassword, setShowPassword] = useState(false);
   const { user, signIn } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!context) {
     throw new Error("Login must be used within a StepProvider");
@@ -41,12 +42,13 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
       password: values?.password || "",
     },
   });
-  console.log("asjdhkj", user);
+
   return (
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
         className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
         onSubmit={handleSubmit(async (data) => {
+          setIsSubmitting(true);
           const updatedValues = {
             ...values,
             email: data.email,
@@ -58,10 +60,9 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
               email: data.email,
               password: data.password,
             });
-            router.push("/"); // or homepage
           } catch (error) {
             console.error("Login failed", error);
-            toast.error("Invalid email or password");
+            setIsSubmitting(false);
           }
         })}
       >
@@ -99,17 +100,18 @@ export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
           </div>
           <p>Forgot password ?</p>
         </div>
-
         <Button
           className={`w-full transition-none hover:bg-black hover:text-black ${
-            formState.isValid
+            formState.isValid && !isSubmitting
               ? "bg-black text-white"
               : "bg-[#d1d1d1] text-[white] hover:bg-[#d1d1d1] hover:text-black"
           }`}
           type="submit"
+          disabled={!formState.isValid || isSubmitting}
         >
-          Let's Go
+          {isSubmitting ? "Logging In..." : "Let's Go"}
         </Button>
+
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
             <p className="text-[#71717A]">Don't have an account?</p>

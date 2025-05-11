@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useContext, useState } from "react";
 import { FormValues, StepContext } from "../../StepProvider";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { toast } from "sonner";
 
 export type Step2type = {
   handlePrev: () => void;
@@ -62,14 +63,10 @@ export const Step2 = ({ handlePrev }: Step2type) => {
           };
           setValues(updatedValues);
           try {
-            await signUp({
-              email: values.email,
-              password: data.password,
-            });
-
-            router.push("/");
-          } catch (err) {
-            console.error("Sign-up error:", err);
+            await signUp({ email: values.email, password: data.password });
+          } catch (error: any) {
+            console.error("Signup failed", error);
+            toast.error(error?.message || "Signup failed");
           }
         })}
       >

@@ -29,13 +29,13 @@ const orderSchema = new Schema({
     type: String,
     enum: ["PENDING", "CANCELED", "DELIVERED"],
     default: "PENDING",
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,
     required: true,
   },
-  udatedAt: {
+  updatedAt: {
     type: Date,
     required: true,
   },

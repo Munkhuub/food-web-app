@@ -23,6 +23,7 @@ interface CartContextType {
   removeItem: (id: string) => void;
   updateQuantity: (id: string, newQuantity: number) => void;
   calculateTotal: () => string;
+  clearCart: () => void; // <--- ADDED THIS
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -117,6 +118,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       .toFixed(2);
   };
 
+  // <--- ADDED THIS FUNCTION
+  const clearCart = () => {
+    setCartItems([]); // Set cart items to an empty array
+    toast.info("Your cart has been cleared."); // Optional: show a toast
+  };
+  // ADDED THIS FUNCTION --->
+
   return (
     <CartContext.Provider
       value={{
@@ -125,6 +133,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeItem,
         updateQuantity,
         calculateTotal,
+        clearCart, // <--- ADDED THIS
       }}
     >
       {children}

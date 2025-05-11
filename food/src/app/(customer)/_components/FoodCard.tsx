@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AddToCard } from "./AddToCard";
 import { FoodsType } from "./Foods";
 
@@ -7,6 +7,8 @@ type FoodCardProps = {
 };
 
 export const FoodCard = ({ food }: FoodCardProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div className="w-[400px] h-[342px] p-4 bg-white rounded-[20px] flex flex-col gap-5 relative">
       <img

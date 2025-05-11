@@ -7,7 +7,7 @@ import { Footer } from "./(customer)/_components/Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Foods } from "./(customer)/_components/Foods";
-import { useAuth } from "./_providers/AuthProvider";
+import { AuthProvider, useAuth } from "./_providers/AuthProvider";
 type CategoryType = {
   categoryName: string;
   _id: string;
@@ -25,19 +25,21 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="lg:w-[1440px] m-auto relative">
-      <Header />
-      <MainBanner />
+    <AuthProvider>
+      <div className="lg:w-[1440px] m-auto relative">
+        <Header />
+        <MainBanner />
 
-      <Categories />
-      {category.map((item) => {
-        return (
-          <div key={item._id}>
-            <Foods categoryId={item._id} categoryName={item.categoryName} />
-          </div>
-        );
-      })}
-      <Footer />
-    </div>
+        <Categories />
+        {category.map((item) => {
+          return (
+            <div key={item._id}>
+              <Foods categoryId={item._id} categoryName={item.categoryName} />
+            </div>
+          );
+        })}
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }

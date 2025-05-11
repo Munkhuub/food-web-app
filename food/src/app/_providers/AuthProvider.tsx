@@ -5,7 +5,7 @@ import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "react";
 
-type user = {
+type User = {
   _id: string;
   name: string;
   email: string;
@@ -13,7 +13,7 @@ type user = {
 };
 
 type AuthContextType = {
-  user?: user;
+  user?: User;
   signIn: ({
     email,
     password,
@@ -35,7 +35,7 @@ const AuthContext = createContext({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
-  const [user, setUser] = useState<user>();
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(false);
 
   const signIn = async ({
@@ -50,9 +50,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         email,
         password,
       });
-      console.log("SignIn response data:", data); // 🔍 Log response
+      console.log("SignIn response data:", data);
       localStorage.setItem("token", data.token);
       setUser(data.user);
+
       router.push("/");
     } catch (error: any) {
       console.error("Login error:", error);
@@ -61,7 +62,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       } else {
         toast.error("Something went wrong");
       }
-      throw error; // re-throw so your form can catch
+      throw error;
     }
   };
 
@@ -79,6 +80,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       });
       localStorage.setItem("token", data.token);
       setUser(data.user);
+      router.push("/signin");
     } catch (error) {
       toast.error("Failed to sign up");
     }
@@ -115,7 +117,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
-      {loading ? <div>Loading...</div> : children}
+      {children}
     </AuthContext.Provider>
   );
 };

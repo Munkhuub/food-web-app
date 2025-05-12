@@ -30,14 +30,15 @@ import OrderDateIcon from "./_assets/OrderDateIcon";
 import OrderMapIcon from "./_assets/OrderMapIcon";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import axios from "axios";
+import { formatDate } from "date-fns";
 
 type OrderHistoryItem = {
   _id: string;
   orderNumber: string;
-  totalAmount: number;
+  totalPrice: number;
   status: string;
-  orderDate: string;
-  items: Array<{ foodName: string; quantity: number }>;
+  createdAt: string;
+  foodOrderItems: Array<{ food: { foodName: string }; quantity: number }>;
   shippingAddress: string;
 };
 
@@ -46,7 +47,7 @@ const CartDetail = () => {
     useCart();
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("cart"); // To manage active tab state
+  const [activeTab, setActiveTab] = useState("cart");
   const [orderHistory, setOrderHistory] = useState<OrderHistoryItem[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
@@ -59,6 +60,7 @@ const CartDetail = () => {
       toast.error("Your cart is empty.");
       return;
     }
+
     try {
       const response = await axios.post(
         "http://localhost:3001/orders",
@@ -69,7 +71,7 @@ const CartDetail = () => {
             food: item.id,
             quantity: item.quantity,
           })),
-          status: "",
+          status: "PENDING",
         },
         {
           headers: {
@@ -80,10 +82,8 @@ const CartDetail = () => {
 
       if (response.status === 200) {
         toast.success("Order placed successfully!");
-        clearCart(); // Clear the cart after successful order
-        // Optionally, switch to the order history tab automatically
+        clearCart();
         setActiveTab("history");
-        // Also, refetch order history to show the new order
         fetchOrderHistory();
       } else {
         toast.error("Failed to place order.");
@@ -102,19 +102,16 @@ const CartDetail = () => {
 
     setIsLoadingOrders(true);
     try {
-      const response = await axios.get(
-        `http://localhost:3001/orders/${user._id}/orders`,
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setOrderHistory(response.data);
+      const response = await axios.get(`http://localhost:3001/orders`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
+      setOrderHistory(response.data.order);
+      console.log("order history", response.data);
     } catch (error) {
       console.error("Error fetching order history:", error);
       toast.error("Failed to load order history.");
-      setOrderHistory([]);
     } finally {
       setIsLoadingOrders(false);
     }
@@ -123,7 +120,6 @@ const CartDetail = () => {
   // Use useEffect to fetch orders when the tab becomes active AND when user changes/logs in
   useEffect(() => {
     if (open && activeTab === "history" && user) {
-      // Only fetch if sheet is open, tab is history, and user is logged in
       fetchOrderHistory();
     }
   }, [open, activeTab, user]);
@@ -247,7 +243,7 @@ const CartDetail = () => {
                     <Button
                       type="submit"
                       className="w-full rounded-full h-11 bg-black"
-                      onClick={handlePlaceOrder}
+                      onClick={() => handlePlaceOrder()}
                     >
                       Proceed to checkout
                     </Button>
@@ -261,67 +257,75 @@ const CartDetail = () => {
               <CardHeader>
                 <CardTitle>Order history</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {isLoadingOrders ? (
-                  <div className="text-center text-gray-500">
-                    Loading order history...
-                  </div>
-                ) : orderHistory.length > 0 ? (
-                  orderHistory.map((order) => (
-                    <div key={order._id} className="space-y-4">
-                      <div className="flex flex-col gap-3 border-b pb-4 border-gray-200 last:border-b-0">
-                        <div className="flex justify-between items-center">
-                          <div className="flex gap-2">
-                            <span className="font-bold">
-                              ${order.totalAmount.toFixed(2)}
-                            </span>
-                            <span className="text-gray-600">
-                              (#{order.orderNumber})
-                            </span>
-                          </div>
-                          <Button
-                            className={`bg-white border text-xs rounded-full w-[68px] h-[28px] ${
-                              order.status === "Pending"
-                                ? "border-[#EF4444] text-[#EF4444]"
-                                : "border-green-500 text-green-500"
-                            }`}
-                          >
-                            {order.status}
-                          </Button>
-                        </div>
-                        {order.items.map((item, itemIndex) => (
-                          <div key={itemIndex} className="flex justify-between">
-                            <div className="flex gap-2 items-center">
-                              <OrderFoodIcon />
-                              <p>{item.foodName}</p>
+              <CardContent className="space-y-2 ">
+                <div className="max-h-160 overflow-auto scroll-auto">
+                  {isLoadingOrders ? (
+                    <div className="text-center text-gray-500">
+                      Loading order history...
+                    </div>
+                  ) : orderHistory.length > 0 ? (
+                    orderHistory.map((order) => (
+                      <div key={order._id} className="space-y-4 ">
+                        <div className="flex flex-col gap-3 border-b pb-4 border-gray-200 last:border-b-0">
+                          <div className="flex justify-between items-center">
+                            <div className="flex gap-2">
+                              <span className="font-bold">
+                                ${order.totalPrice.toFixed(2)}
+                              </span>
+                              <span className="text-gray-600">
+                                (#{order.orderNumber})
+                              </span>
                             </div>
-                            <div>x{item.quantity}</div>
+                            <Button
+                              className={`bg-white border text-xs rounded-full w-[68px] h-[28px] ${
+                                order.status === "Pending"
+                                  ? "border-[#EF4444] text-[#EF4444]"
+                                  : "border-green-500 text-green-500"
+                              }`}
+                            >
+                              {order.status}
+                            </Button>
                           </div>
-                        ))}
-                        <div className="flex justify-between">
-                          <div className="flex gap-2 items-center">
-                            <OrderDateIcon />
-                            <p>
-                              {new Date(order.orderDate).toLocaleDateString()}
-                            </p>
+                          {order.foodOrderItems.map((item, itemIndex) => (
+                            <div
+                              key={itemIndex}
+                              className="flex justify-between"
+                            >
+                              <div className="flex gap-2 items-center">
+                                <OrderFoodIcon />
+                                <p>{item.food.foodName}</p>
+                              </div>
+                              <div>x{item.quantity}</div>
+                            </div>
+                          ))}
+                          <div className="flex justify-between">
+                            <div className="flex gap-2 items-center">
+                              <OrderDateIcon />
+                              <p>
+                                {formatDate(
+                                  new Date(order.createdAt),
+                                  "yyyy-MM-dd HH:mm"
+                                )}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex justify-between">
-                          <div className="flex gap-2 items-center">
-                            <OrderMapIcon />
-                            <p className="max-w-[70%] truncate">
-                              {order.shippingAddress}
-                            </p>
+                          <div className="flex justify-between">
+                            <div className="flex gap-2 items-center">
+                              <OrderMapIcon />
+                              <p className="max-w-[70%] truncate">
+                                {order.shippingAddress}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="p-6 text-center text-gray-500">
+                      No order history found.
                     </div>
-                  ))
-                ) : (
-                  <div className="p-6 text-center text-gray-500">
-                    No order history found.
-                  </div>
-                )}
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

@@ -1,7 +1,7 @@
 import { orderModel } from "../../models/food-order.model";
 
 export const createOrderController = async (req, res) => {
-  const { user, totalPrice, foodOrderItems, status } = req.body;
+  const { user, foodOrderItems, status, totalPrice } = req.body;
   try {
     const order = await orderModel.create({
       user,

@@ -15,8 +15,8 @@ const orderRouter = Router();
 
 orderRouter
   .post("/", authenticationMiddleware, createOrderController)
-  .get("/", authenticationMiddleware, authorizationMiddleware, getOrder)
-  .get("/users/:userId/orders", getUserOrdersController)
+  .get("/", authenticationMiddleware, getOrder)
+  // .get("/all", authenticationMiddleware, authorizationMiddleware, getAllOrder)
   .get("/:id", authenticationMiddleware, getOrderById)
 
   .put("/:id", authenticationMiddleware, putOrderById)

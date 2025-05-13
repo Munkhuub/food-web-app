@@ -10,13 +10,14 @@ import {
 import { getUserOrdersController } from "../controllers/orders/get-user-orders";
 import { authenticationMiddleware } from "../controllers/middlewares/authentication-middleware";
 import { authorizationMiddleware } from "../controllers/middlewares/authorization-middleware";
+import { getAllOrder } from "../controllers/orders/get-all-order";
 
 const orderRouter = Router();
 
 orderRouter
   .post("/", authenticationMiddleware, createOrderController)
   .get("/", authenticationMiddleware, getOrder)
-  // .get("/all", authenticationMiddleware, authorizationMiddleware, getAllOrder)
+  .get("/all", getAllOrder)
   .get("/:id", authenticationMiddleware, getOrderById)
 
   .put("/:id", authenticationMiddleware, putOrderById)

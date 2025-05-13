@@ -5,11 +5,12 @@ import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "react";
 
-type User = {
+export type User = {
   _id: string;
   name: string;
   email: string;
   image: string;
+  address: string;
 };
 
 type AuthContextType = {

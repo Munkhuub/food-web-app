@@ -9,14 +9,14 @@ import {
   loginUser,
 } from "../controllers/user";
 
-const foodRouter = Router();
+const userRouter = Router();
 
-foodRouter
+userRouter
   .get("/", getUser)
+  .post("/", createUserController)
+  .post("/", loginUser)
   .get("/:id", getUserById)
   .put("/:id", putUserById)
-  .delete("/:id", deleteUserById)
-  .post("/", createUserController)
-  .post("/", loginUser);
+  .delete("/:id", deleteUserById);
 
-export default foodRouter;
+export default userRouter;

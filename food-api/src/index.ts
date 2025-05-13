@@ -8,6 +8,7 @@ import countAllRouter from "./routes/countAll.route";
 import authRouter from "./routes/auth.route";
 import { config } from "dotenv";
 import orderRouter from "./routes/order.route";
+import userRouter from "./routes/user.route";
 
 config();
 
@@ -25,7 +26,8 @@ app
   .use("/count", countRouter)
   .use("/countAll", countAllRouter)
   .use("/auth", authRouter)
-  .use("/orders", orderRouter);
+  .use("/orders", orderRouter)
+  .use("/user", userRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

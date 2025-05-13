@@ -9,13 +9,35 @@ import { DatePickerWithRange } from "../_components/DatePicker";
 import { Button } from "@/components/ui/button";
 import AddressToggler from "./_components/AddressToggler";
 import { PaginationAdmin } from "../_components/PaginationAdmin";
+import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 
 const tableData = {
   location:
     "2024/12/СБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоонСБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоон20",
 };
-
+type ordersType = {
+  _id: string;
+  orderNumber: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+  foodOrderItems: Array<{ food: { foodName: string }; quantity: number }>;
+  shippingAddress: string;
+};
 export default function Home() {
+  const [orders, setOrders] = useState<ordersType[]>([]);
+  const getAllOrders = useCallback(async () => {
+    const { data } = await axios.get(`http://localhost:3001/orders/all`);
+
+    setOrders(data.order);
+    console.log(data.order);
+  }, []);
+
+  useEffect(() => {
+    getAllOrders();
+  }, [getAllOrders]);
+
   return (
     <div className="h-full w-full mr-10 mb-13 pt-6 bg-[#E4E4E7] flex flex-col gap-6 pl-6 pr-10">
       <div className="size-9 bg-black ml-auto rounded-full">
@@ -32,7 +54,7 @@ export default function Home() {
             <Button>Change delivery state</Button>
           </div>
         </div>
-        <div>
+        <div className="overflow-auto max-h-[70vh]">
           <table className="text-[#71717A] w-full text-left">
             <thead className="w-full h-13 border-y-[1px] border-[#F4F4F5CC] ">
               <tr>
@@ -60,25 +82,33 @@ export default function Home() {
                 </th>
               </tr>
             </thead>
+
             <tbody className="w-full h-13 border-b-[1px] border-[#F4F4F5CC]">
-              <tr>
-                <th className="w-12 p-4">
-                  <input type="checkbox" className="size-4" />
-                </th>
-                <th className="w-14 font-medium p-4">1</th>
-                <th className="w-[213.5px] font-medium p-4">Test@gmail.com</th>
-                <th className="w-40 font-medium p-4">
-                  <p>2 Foods</p>
-                </th>
-                <th className="w-40 font-medium p-4">
-                  <p>2024/12/20</p>
-                </th>
-                <td className="w-40 font-medium p-4">$26.97</td>
-                <td className="w-[213.5px] text-xs p-4">
-                  <AddressToggler address={tableData.location} maxLength={57} />
-                </td>
-                <td className="w-40 p-4">Pending</td>
-              </tr>
+              {orders.map((order, index) => (
+                <tr key={order._id}>
+                  <th className="w-12 p-4">
+                    <input type="checkbox" className="size-4" />
+                  </th>
+                  <th className="w-14 font-medium p-4">1</th>
+                  <th className="w-[213.5px] font-medium p-4">
+                    Test@gmail.com
+                  </th>
+                  <th className="w-40 font-medium p-4">
+                    <p>2 Foods</p>
+                  </th>
+                  <th className="w-40 font-medium p-4">
+                    <p>2024/12/20</p>
+                  </th>
+                  <td className="w-40 font-medium p-4">{order.totalPrice}</td>
+                  <td className="w-[213.5px] text-xs p-4">
+                    <AddressToggler
+                      address={tableData.location}
+                      maxLength={57}
+                    />
+                  </td>
+                  <td className="w-40 p-4">Pending</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

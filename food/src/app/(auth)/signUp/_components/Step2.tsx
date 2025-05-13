@@ -32,7 +32,6 @@ export const schema = z
   });
 
 export const Step2 = ({ handlePrev }: Step2type) => {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { user, signUp } = useAuth();
   const context = useContext(StepContext);

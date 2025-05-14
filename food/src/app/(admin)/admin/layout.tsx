@@ -1,4 +1,4 @@
-import { SideBar } from "./_components/SideBar";
+import { SideBar } from "./foodMenu/_components/SideBar";
 
 export default function LaAdminyout({
   children,

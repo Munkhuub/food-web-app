@@ -5,18 +5,22 @@ import {
   SettingsIcon,
   TruckIcon,
 } from "lucide-react";
-import { DatePickerWithRange } from "../_components/DatePicker";
+import { DatePickerWithRange } from "../foodMenu/_components/DatePicker";
 import { Button } from "@/components/ui/button";
 import AddressToggler from "./_components/AddressToggler";
-import { PaginationAdmin } from "../_components/PaginationAdmin";
+import { PaginationAdmin } from "../foodMenu/_components/PaginationAdmin";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { Item } from "@radix-ui/react-select";
+import { useAuth } from "@/app/_providers/AuthProvider";
+import { formatDate } from "date-fns";
+import OrderStatusSelect from "./_components/OrderStatusSelect";
 
 const tableData = {
   location:
     "2024/12/СБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоонСБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоон20",
 };
-type ordersType = {
+export type ordersType = {
   _id: string;
   orderNumber: string;
   totalPrice: number;
@@ -27,6 +31,7 @@ type ordersType = {
 };
 export default function Home() {
   const [orders, setOrders] = useState<ordersType[]>([]);
+  const { user } = useAuth();
   const getAllOrders = useCallback(async () => {
     const { data } = await axios.get(`http://localhost:3001/orders/all`);
 
@@ -84,7 +89,7 @@ export default function Home() {
             </thead>
 
             <tbody className="w-full h-13 border-b-[1px] border-[#F4F4F5CC]">
-              {orders.map((order, index) => (
+              {orders.map((order) => (
                 <tr key={order._id}>
                   <th className="w-12 p-4">
                     <input type="checkbox" className="size-4" />
@@ -94,19 +99,20 @@ export default function Home() {
                     Test@gmail.com
                   </th>
                   <th className="w-40 font-medium p-4">
-                    <p>2 Foods</p>
+                    <p>food order items</p>
                   </th>
                   <th className="w-40 font-medium p-4">
-                    <p>2024/12/20</p>
+                    <p>
+                      {formatDate(new Date(order.createdAt), "yyyy / MM / dd")}
+                    </p>
                   </th>
-                  <td className="w-40 font-medium p-4">{order.totalPrice}</td>
+                  <td className="w-40 font-medium p-4">${order.totalPrice}</td>
                   <td className="w-[213.5px] text-xs p-4">
-                    <AddressToggler
-                      address={tableData.location}
-                      maxLength={57}
-                    />
+                    <AddressToggler address={user?.address} maxLength={57} />
                   </td>
-                  <td className="w-40 p-4">Pending</td>
+                  <td className="w-40 p-4">
+                    <OrderStatusSelect order={order} />
+                  </td>
                 </tr>
               ))}
             </tbody>

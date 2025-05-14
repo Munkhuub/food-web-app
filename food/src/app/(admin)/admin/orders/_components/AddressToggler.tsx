@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface AddressTogglerProps {
-  address: string;
+  address?: string;
   maxLength?: number;
   isLoading?: boolean;
 }
@@ -13,7 +13,7 @@ const AddressToggler: React.FC<AddressTogglerProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const getShortenedAddress = (text: string): string => {
+  const getShortenedAddress = (text?: string): string => {
     if (!text) return "";
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";

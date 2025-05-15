@@ -15,16 +15,7 @@ import axios from "axios";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { toast } from "sonner";
 
-type DeliveryAddressProps = {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onAddressSubmitted?: () => void;
-};
-const DeliveryAddress: React.FC<DeliveryAddressProps> = ({
-  isOpen,
-  onOpenChange,
-  onAddressSubmitted,
-}) => {
+const DeliveryAddress = ({}) => {
   const [userAddress, setUserAddress] = useState("");
   const { user } = useAuth();
   const [error, setError] = useState("");

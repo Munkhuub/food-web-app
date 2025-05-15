@@ -13,13 +13,10 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { Item } from "@radix-ui/react-select";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { formatDate } from "date-fns";
+import { formatDate, isAfter, isBefore, isEqual, parseISO } from "date-fns";
 import OrderStatusSelect from "./_components/OrderStatusSelect";
+import { DateRange } from "react-day-picker";
 
-const tableData = {
-  location:
-    "2024/12/СБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоонСБД, 12-р хороо, СБД нэгдсэн эмнэлэг Sbd negdsen emneleg | 100 айлын гүүрэн гарцны хойд талд 4д ногоон20",
-};
 export type ordersType = {
   _id: string;
   orderNumber: string;
@@ -31,17 +28,66 @@ export type ordersType = {
 };
 export default function Home() {
   const [orders, setOrders] = useState<ordersType[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<ordersType[]>([]);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const { user } = useAuth();
   const getAllOrders = useCallback(async () => {
     const { data } = await axios.get(`http://localhost:3001/orders/all`);
 
     setOrders(data.order);
+    setFilteredOrders(data.order);
     console.log(data.order);
   }, []);
 
   useEffect(() => {
     getAllOrders();
   }, [getAllOrders]);
+
+  useEffect(() => {
+    if (!dateRange || !dateRange.from) {
+      // If no date range is selected, show all orders
+      setFilteredOrders(orders);
+      return;
+    }
+
+    // Apply date range filter
+    const filtered = orders.filter((order) => {
+      const orderDate = parseISO(order.createdAt);
+
+      // If only "from" date is selected
+      if (dateRange.from && !dateRange.to) {
+        return (
+          isEqual(orderDate, dateRange.from) ||
+          isAfter(orderDate, dateRange.from)
+        );
+      }
+
+      // If both "from" and "to" dates are selected
+      if (dateRange.from && dateRange.to) {
+        return (
+          (isEqual(orderDate, dateRange.from) ||
+            isAfter(orderDate, dateRange.from)) &&
+          (isEqual(orderDate, dateRange.to) ||
+            isBefore(orderDate, dateRange.to))
+        );
+      }
+
+      return true;
+    });
+
+    setFilteredOrders(filtered);
+  }, [dateRange, orders]);
+
+  // Handle date range changes from the DatePicker
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range);
+  };
+
+  // Reset filters
+  const resetFilters = () => {
+    setDateRange(undefined);
+    setFilteredOrders(orders);
+  };
 
   return (
     <div className="h-full w-full mr-10 mb-13 pt-6 bg-[#E4E4E7] flex flex-col gap-6 pl-6 pr-10">
@@ -52,11 +98,15 @@ export default function Home() {
         <div className="flex justify-between py-4">
           <div>
             <p className="text-xl font-bold">Orders</p>
-            <p className="text-xs text-[#71717A]">32 items</p>
+            <p className="text-xs text-[#71717A]">{filteredOrders.length}</p>
           </div>
           <div className="flex gap-3">
-            <DatePickerWithRange />
-            <Button>Change delivery state</Button>
+            <DatePickerWithRange onDateRangeChange={handleDateRangeChange} />
+            {dateRange && (
+              <Button onClick={resetFilters} variant="outline">
+                Clear Filters
+              </Button>
+            )}
           </div>
         </div>
         <div className="overflow-auto max-h-[70vh]">
@@ -115,6 +165,13 @@ export default function Home() {
                   </td>
                 </tr>
               ))}
+              {filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="text-center py-8 text-gray-500">
+                    No orders found for the selected date range
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

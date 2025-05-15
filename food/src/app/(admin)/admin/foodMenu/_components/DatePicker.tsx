@@ -14,11 +14,18 @@ import {
 
 export function DatePickerWithRange({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  });
+  onDateRangeChange,
+}: React.HTMLAttributes<HTMLDivElement> & {
+  onDateRangeChange?: (range: DateRange | undefined) => void;
+}) {
+  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
+
+  // When date changes, notify parent component
+  React.useEffect(() => {
+    if (onDateRangeChange) {
+      onDateRangeChange(date);
+    }
+  }, [date, onDateRangeChange]);
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -32,7 +39,7 @@ export function DatePickerWithRange({
               !date && "text-muted-foreground"
             )}
           >
-            <CalendarIcon />
+            <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
               date.to ? (
                 <>
@@ -43,7 +50,7 @@ export function DatePickerWithRange({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick a date</span>
+              <span>Filter by date</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -51,7 +58,7 @@ export function DatePickerWithRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
+            defaultMonth={date?.from || new Date()}
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}

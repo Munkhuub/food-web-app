@@ -1,12 +1,6 @@
 "use client";
-import {
-  ChevronsUpDown,
-  LayoutDashboardIcon,
-  SettingsIcon,
-  TruckIcon,
-} from "lucide-react";
+import { LayoutDashboardIcon, SettingsIcon, TruckIcon } from "lucide-react";
 import Link from "next/link";
-import { useLocation } from "react-router-dom";
 
 export const SideBar = () => {
   return (
@@ -27,7 +21,7 @@ export const SideBar = () => {
       </div>
 
       <div className=" w-[165px] flex flex-col gap-6 justify-center ml-6 sticky top-30">
-        <Link href="/admin/foodMenu">
+        <Link href="/admin">
           <div className="flex gap-[10px]">
             <LayoutDashboardIcon className="size-[22px]" />
             <p>Food menu</p>

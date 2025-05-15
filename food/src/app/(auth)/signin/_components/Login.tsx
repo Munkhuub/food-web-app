@@ -7,11 +7,9 @@ import { useContext, useState } from "react";
 import { StepContext } from "../../StepProvider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { schema } from "../../signup/_components/Step1";
 import { z } from "zod";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 type LoginPropsType = {
   handlePrev: () => void;
@@ -22,11 +20,10 @@ export const loginSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export const Login = ({ handlePrev, handleNext }: LoginPropsType) => {
-  const router = useRouter();
+export const Login = ({ handlePrev }: LoginPropsType) => {
   const context = useContext(StepContext);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, signIn } = useAuth();
+  const { signIn } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!context) {

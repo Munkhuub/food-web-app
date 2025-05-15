@@ -12,6 +12,7 @@ import { ordersType } from "../page";
 import { toast } from "sonner";
 import axios from "axios";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 type statusProps = {
   order: ordersType;
 };
@@ -48,9 +49,24 @@ const OrderStatusSelect = ({ order }: statusProps) => {
     setNewStatus(status);
     await updateStatus(status);
   };
+
+  const borderColorClass =
+    newStatus === "Pending"
+      ? "border-red-500"
+      : newStatus === "Delivered"
+      ? "border-green-500"
+      : "";
+
   return (
     <Select value={newStatus} onValueChange={handleSelectStatus}>
-      <SelectTrigger className="w-[98px] rounded-full flex gap-2">
+      <SelectTrigger
+        className={cn(
+          "rounded-full flex gap-2",
+          borderColorClass,
+          newStatus === "Pending" && "focus:ring-red-500",
+          newStatus === "Delivered" && "focus:ring-green-500"
+        )}
+      >
         <SelectValue placeholder="Pending" />
         <div className="flex items-center">
           <ChevronsUpDown className="size-4" />

@@ -71,7 +71,7 @@ const CartDetail = () => {
             food: item.id,
             quantity: item.quantity,
           })),
-          status: "PENDING",
+          status: "Pending",
         },
         {
           headers: {

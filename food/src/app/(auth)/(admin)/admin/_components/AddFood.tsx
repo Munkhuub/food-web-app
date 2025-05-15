@@ -5,7 +5,6 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -13,7 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 const UPLOAD_PRESET = "foodWebApp";
 const CLOUD_NAME = "dpbmpprw5";
@@ -30,10 +30,9 @@ export const AddFood = ({
   categoryName,
 }: AddFoodProps) => {
   const [loading, setLoading] = useState(false);
-  const [imageValue, setImageValue] = useState<File | undefined>();
   const [deployedImg, setDeployedImg] = useState("");
   const [open, setOpen] = useState(false);
-  const [foodName, setfoodName] = useState("");
+  const [foodName, setFoodName] = useState("");
   const [price, setPrice] = useState("");
   const [ingredients, setIngredients] = useState("");
 
@@ -58,14 +57,34 @@ export const AddFood = ({
       const result = response.data.url;
       return result;
     } catch (error) {
-      console.log(error);
-      return { error: "failed to upload image" };
+      console.error("Image upload failed:", error);
+      return null;
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLoading(true);
+      const imageUrl = await uploadImage(file);
+      if (imageUrl) {
+        setDeployedImg(imageUrl);
+      } else {
+        setDeployedImg("");
+      }
+      setLoading(false);
     }
   };
 
   const handleCreate = async () => {
     try {
       setLoading(true);
+
+      if (!deployedImg) {
+        console.error("No image uploaded.");
+        setLoading(false);
+        return;
+      }
 
       await axios.post("http://localhost:3001/food/oneFood", {
         foodName,
@@ -76,22 +95,23 @@ export const AddFood = ({
       });
 
       await getFoods();
-
       setOpen(false);
+      setFoodName("");
+      setPrice("");
+      setIngredients("");
+      setDeployedImg("");
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error creating food:", error);
+      toast.error("Error creating food");
     } finally {
       setLoading(false);
     }
   };
-  const handleUploadImg = async () => {
-    const result = await uploadImage(imageValue);
-    setDeployedImg(result);
-  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="w-[270.75px] h-[241px] border border-dashed border-[#EF4444] rounded-[20px] flex flex-col gap-6 justify-center items-center">
+        <div className="w-[270.75px] h-[241px] border border-dashed border-[#EF4444] rounded-[20px] flex flex-col gap-6 justify-center items-center cursor-pointer">
           <Button className="size-10 rounded-full bg-[#EF4444] flex items-center justify-center">
             <Plus className="text-white size-4" />
           </Button>
@@ -102,23 +122,23 @@ export const AddFood = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add new Dish to Appetizers</DialogTitle>
+          <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex gap-3">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name" className="text-right">
+            <div className="flex flex-col gap-2 flex-1">
+              <Label htmlFor="food-name" className="text-right">
                 Food name
               </Label>
               <Input
-                id="name"
+                id="food-name"
                 value={foodName}
                 className="col-span-3"
-                onChange={(e) => setfoodName(e.target.value)}
+                onChange={(e) => setFoodName(e.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="username" className="text-right">
+            <div className="flex flex-col gap-2 flex-1">
+              <Label htmlFor="food-price" className="text-right">
                 Food price
               </Label>
               <Input
@@ -133,33 +153,60 @@ export const AddFood = ({
             <Label htmlFor="ingredients" className="text-top">
               Ingredients
             </Label>
-            <Input
+            <Textarea
               value={ingredients}
               className="h-[90px]"
               onChange={(e) => setIngredients(e.target.value)}
-              type="text"
             />
           </div>
-          {deployedImg == "" ? (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="image" className="text-top">
-                Food image
-              </Label>
+
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="food-image" className="text-top">
+              Food image
+            </Label>
+            {deployedImg ? (
+              <div className="relative w-full h-[150px] border rounded-md overflow-hidden flex items-center justify-center">
+                <img
+                  src={deployedImg}
+                  alt="Uploaded food image"
+                  className="object-cover w-full h-full"
+                />
+
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 rounded-full"
+                  onClick={() => setDeployedImg("")}
+                >
+                  <XIcon className="size-4" />
+                </Button>
+              </div>
+            ) : (
               <Input
-                className="h-[90px]"
-                onChange={(e) => setImageValue(e.target.files?.[0])}
+                id="food-image"
+                className="h-[90px] cursor-pointer"
+                onChange={handleFileChange}
                 type="file"
+                accept="image/*"
               />
-              <Button onClick={handleUploadImg}>Add</Button>
-            </div>
-          ) : (
-            <img alt="asd" src={deployedImg} />
-          )}
+            )}
+          </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleCreate} disabled={loading}>
-            Save changes
-            {!loading}
+          <Button
+            type="submit"
+            onClick={handleCreate}
+            disabled={
+              loading || !deployedImg || !foodName || !price || !ingredients
+            }
+          >
+            {loading ? (
+              <>
+                Saving... <span className="ml-2 animate-spin">🌀</span>
+              </>
+            ) : (
+              "Save changes"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -5,6 +5,7 @@ export const getAllOrder = async (req, res) => {
     const order = await orderModel
       .find({})
       .populate("foodOrderItems.food")
+      .populate("user")
       .sort({ createdAt: -1 });
     return res.status(200).json({ order });
   } catch (error) {

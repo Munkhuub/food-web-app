@@ -24,6 +24,12 @@ export default function Home() {
     getCategories();
   }, []);
 
+  if (!user) {
+    return;
+  }
+  if (user.role !== "admin") {
+    return;
+  }
   return (
     <AuthProvider>
       <div className="lg:w-[1440px] m-auto relative">

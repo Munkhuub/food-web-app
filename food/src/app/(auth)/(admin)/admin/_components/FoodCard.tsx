@@ -1,8 +1,4 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import axios from "axios";
-import { Pencil, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
 import { EditFood } from "./EditFood";
 import { FoodsTypeCategory } from "./CategoryFoods";
 

@@ -122,6 +122,13 @@ export default function Home() {
     setCurrentPage(1); // Reset to first page when changing items per page
   };
 
+  if (!user) {
+    return;
+  }
+  if (user.role !== "admin") {
+    return;
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#E4E4E7] flex flex-col gap-6 pt-6 pb-13 pl-6 pr-10">
       <div className="size-9 bg-black ml-auto rounded-full">

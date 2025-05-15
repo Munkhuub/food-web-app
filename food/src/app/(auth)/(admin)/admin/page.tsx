@@ -4,6 +4,7 @@ import { CategoryMenu } from "./_components/CategoryMenu";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CategoryFoods } from "./_components/CategoryFoods";
+import { useAuth } from "@/app/_providers/AuthProvider";
 
 export type CategoryType = {
   _id: string;
@@ -13,6 +14,7 @@ export type CategoryType = {
 export default function Home() {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const { user } = useAuth();
   const getCategories = async () => {
     const { data } = await axios.get("http://localhost:3001/category");
     setCategories(data.categories);
@@ -25,7 +27,12 @@ export default function Home() {
   const handleAllDishesClick = () => {
     setSelectedCategory("");
   };
-
+  if (!user) {
+    return;
+  }
+  if (user.role !== "admin") {
+    return;
+  }
   return (
     <div className="min-h-screen w-full bg-[#E4E4E7] pl-6 pr-10 py-6 flex flex-col gap-6">
       <div className="size-9 bg-black ml-auto rounded-full">

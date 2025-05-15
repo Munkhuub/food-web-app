@@ -8,8 +8,8 @@ import {
   deleteOrderById,
 } from "../controllers/orders";
 import { getUserOrdersController } from "../controllers/orders/get-user-orders";
-import { authenticationMiddleware } from "../controllers/middlewares/authentication-middleware";
-import { authorizationMiddleware } from "../controllers/middlewares/authorization-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
+import { authorizationMiddleware } from "../middlewares/authorization-middleware";
 import { getAllOrder } from "../controllers/orders/get-all-order";
 
 const orderRouter = Router();

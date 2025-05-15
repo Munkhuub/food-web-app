@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { signup, signin, me } from "../controllers/auth";
-import { authenticationMiddleware } from "../controllers/middlewares/authentication-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
 
 export const authRouter = Router();
 

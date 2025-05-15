@@ -1,8 +1,16 @@
 "use client";
+import { useAuth } from "@/app/_providers/AuthProvider";
 import { LayoutDashboardIcon, SettingsIcon, TruckIcon } from "lucide-react";
 import Link from "next/link";
 
 export const SideBar = () => {
+  const { user } = useAuth();
+  if (!user) {
+    return;
+  }
+  if (user.role !== "admin") {
+    return;
+  }
   return (
     <div className="w-[205px] px-5 py-9 bg-[white] flex flex-col gap-10 shadow-xl relative">
       <div className="sticky top-9">

@@ -43,14 +43,17 @@ export const Footer = () => {
           animate="animate"
         >
           {carousel.map((item, i) => (
-            <h2 key={`item-${i}`} className="text-3xl font-semibold mr-[34px]">
+            <h2
+              key={`item-${i}`}
+              className="text-3xl font-semibold mr-[34px] text-white"
+            >
               {item}
             </h2>
           ))}
           {carousel.map((item, i) => (
             <h2
               key={`duplicate-item-${i}`}
-              className="text-3xl font-semibold mr-[34px]"
+              className="text-3xl font-semibold mr-[34px] text-white"
             >
               {item}
             </h2>

@@ -28,10 +28,10 @@ export default function Home() {
     setSelectedCategory("");
   };
   if (!user) {
-    return;
+    return null;
   }
   if (user.role !== "admin") {
-    return;
+    return null;
   }
   return (
     <div className="min-h-screen w-full bg-[#E4E4E7] pl-6 pr-10 py-6 flex flex-col gap-6">

@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
-import { FormValues, StepContext } from "../../StepProvider";
+import { StepContext } from "../../StepProvider";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { toast } from "sonner";
 
@@ -33,7 +32,7 @@ export const schema = z
 
 export const Step2 = ({ handlePrev }: Step2type) => {
   const [showPassword, setShowPassword] = useState(false);
-  const { user, signUp } = useAuth();
+  const { signUp } = useAuth();
   const context = useContext(StepContext);
 
   if (!context) {

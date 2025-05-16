@@ -1,8 +1,7 @@
 import { CategoryType } from "@/app/page";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type CategoryProps = {
   category: CategoryType[];

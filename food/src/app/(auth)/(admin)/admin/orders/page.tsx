@@ -123,16 +123,16 @@ export default function Home() {
   };
 
   if (!user) {
-    return;
+    return null;
   }
   if (user.role !== "admin") {
-    return;
+    return null;
   }
 
   return (
     <div className="min-h-screen w-full bg-[#E4E4E7] flex flex-col gap-6 pt-6 pb-13 pl-6 pr-10">
       <div className="size-9 bg-black ml-auto rounded-full">
-        <img />
+        <img src={user.image} />
       </div>
       <div className="bg-white h-[800px] rounded-lg px-4">
         <div className="flex justify-between py-4">

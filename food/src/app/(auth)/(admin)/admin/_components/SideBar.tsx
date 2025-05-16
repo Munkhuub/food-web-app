@@ -6,10 +6,10 @@ import Link from "next/link";
 export const SideBar = () => {
   const { user } = useAuth();
   if (!user) {
-    return;
+    return null;
   }
   if (user.role !== "admin") {
-    return;
+    return null;
   }
   return (
     <div className="w-[205px] px-5 py-9 bg-[white] flex flex-col gap-10 shadow-xl relative">

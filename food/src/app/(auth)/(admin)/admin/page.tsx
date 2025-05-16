@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <div className="min-h-screen w-full bg-[#E4E4E7] pl-6 pr-10 py-6 flex flex-col gap-6">
       <div className="size-9 bg-black ml-auto rounded-full">
-        <img />
+        <img src={user.image} />
       </div>
       <div className="p-4 rounded-md bg-white flex flex-col gap-2 ">
         <CategoryMenu

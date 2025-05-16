@@ -9,11 +9,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import { useRouter } from "next/navigation";
 
 type LoginPropsType = {
   handlePrev: () => void;
-  handleNext: () => void;
 };
 export const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -22,7 +20,6 @@ export const loginSchema = z.object({
 
 export const Login = ({ handlePrev }: LoginPropsType) => {
   const context = useContext(StepContext);
-  const [showPassword, setShowPassword] = useState(false);
   const { signIn } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -89,7 +86,7 @@ export const Login = ({ handlePrev }: LoginPropsType) => {
           )}
           <div className="w-full h-9 px-3 py-2 border-[1px] border-[#E4E4E7] rounded-md">
             <input
-              type={showPassword ? "text" : "password"}
+              type="password"
               placeholder="Password"
               className="h-5 flex items-center text-[14px] w-full border-none"
               {...register("password")}

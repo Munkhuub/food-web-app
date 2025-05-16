@@ -1,16 +1,14 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Minus, Plus, XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
 import { FoodsType } from "./Foods";
 import { useCart } from "./CartContext";
 

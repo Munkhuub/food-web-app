@@ -1,11 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Cart } from "./_assets/Cart";
-import { Profile } from "./_assets/Profile";
 import DeliveryAddress from "./DeliveryAddress";
 import CartDetail from "./CartDetail";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { UserProfile } from "./UserProfile";

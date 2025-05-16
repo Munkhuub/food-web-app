@@ -10,10 +10,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Profile } from "./_assets/Profile";
 import { useEffect, useState } from "react";
+import { ChevronRight, UserIcon } from "lucide-react";
+import MyProfile from "./MyProfile";
 
 export const UserProfile = () => {
   const { user, signOut } = useAuth();
@@ -21,12 +21,11 @@ export const UserProfile = () => {
   const [email, setEmail] = useState("");
   const [open, setOpen] = useState(false);
 
-  // Log user data for debugging
   console.log("UserProfile rendered with user:", user);
 
   useEffect(() => {
     if (user) {
-      setName(user.name || "");
+      setName(user.name || "Name here");
       setEmail(user.email || "");
     }
   }, [user]);
@@ -46,15 +45,19 @@ export const UserProfile = () => {
         <DialogHeader>
           <DialogTitle>
             <div className="flex gap-2 items-center ">
-              <img className="size-12 rounded-full bg-black" />
+              <img
+                src={user?.image}
+                className="size-12 rounded-full bg-black"
+              />
               <div>
-                <p className="text-xs">Name here</p>
+                <p className="text-xs">{name}</p>
                 <p className="text-xs">{email}</p>
               </div>
             </div>
           </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4 mb-auto">
+          <MyProfile />
           <DialogFooter className="flex justify-between items-center">
             <Button
               variant="destructive"

@@ -27,8 +27,8 @@ export const Footer = () => {
         x: {
           repeat: Infinity,
           repeatType: "loop",
-          duration: 45, // Adjust duration for scroll speed (e.g., 20 seconds for one loop)
-          ease: "linear", // Linear speed for continuous scroll
+          duration: 45,
+          ease: "linear",
         },
       },
     },

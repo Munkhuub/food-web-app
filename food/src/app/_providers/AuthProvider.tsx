@@ -16,6 +16,8 @@ export type User = {
 
 type AuthContextType = {
   user?: User;
+  setUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+  loading: boolean;
   signIn: ({
     email,
     password,
@@ -118,7 +120,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, signIn, signUp, signOut, loading, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

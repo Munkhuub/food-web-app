@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 const DeliveryAddress = ({}) => {
   const [userAddress, setUserAddress] = useState("");
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
@@ -34,6 +34,13 @@ const DeliveryAddress = ({}) => {
       setError("Address is required");
       return;
     }
+
+    const userId = user?._id;
+    if (!userId) {
+      setError("User not logged in or ID not available.");
+      toast.error("User ID not found. Please log in again.");
+      return;
+    }
     setIsSubmitting(true);
     try {
       const userId = user?._id;
@@ -41,8 +48,13 @@ const DeliveryAddress = ({}) => {
       const { data } = await axios.put(`http://localhost:3001/user/${userId}`, {
         address: userAddress,
       });
+      setUser((prev) => {
+        if (!prev) return prev;
+        return { ...prev, address: userAddress };
+      });
       console.log("Address updated successfully", data);
       toast.success("Address updated successfully");
+      setOpen(false);
     } catch (error) {
       console.error("Failed to update address", error);
       setError("Failed to update address. Please try again.");
@@ -50,6 +62,33 @@ const DeliveryAddress = ({}) => {
       setIsSubmitting(false);
     }
   };
+  const clearAddress = async () => {
+    const userId = user?._id;
+    if (!userId) {
+      toast.error("User ID not found. Please log in again.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { data } = await axios.put(`http://localhost:3001/user/${userId}`, {
+        address: "",
+      });
+      setUser((prev) => {
+        if (!prev) return prev;
+        return { ...prev, address: "" };
+      });
+      setUserAddress("");
+      toast.success("Address cleared successfully");
+      setOpen(false);
+    } catch (error) {
+      console.error("Failed to clear address", error);
+      toast.error("Failed to clear address. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -81,6 +120,14 @@ const DeliveryAddress = ({}) => {
             {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
           </div>
           <DialogFooter>
+            <Button
+              type="button"
+              onClick={clearAddress}
+              disabled={isSubmitting}
+              className="bg-white text-black border border-[#E4E4E7]"
+            >
+              Clear Address
+            </Button>
             <DialogClose asChild>
               <Button
                 type="button"

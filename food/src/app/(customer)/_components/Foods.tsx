@@ -14,9 +14,14 @@ export type FoodsType = {
 type AppetizersType = {
   categoryId: string;
   categoryName: string;
+  selectedCategory: string;
 };
 
-export const Foods = ({ categoryId, categoryName }: AppetizersType) => {
+export const Foods = ({
+  categoryId,
+  categoryName,
+  selectedCategory,
+}: AppetizersType) => {
   const [foods, setFoods] = useState<FoodsType[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,8 +53,10 @@ export const Foods = ({ categoryId, categoryName }: AppetizersType) => {
     );
   }
 
+  if (!foods.length && !selectedCategory) return null;
+
   return (
-    <div className="px-22 bg-[#404040] pt-10 pb-[54px]">
+    <div className="px-22 bg-[#404040] pb-[54px]">
       <h2 className="text-3xl font-semibold text-white">{categoryName}</h2>
 
       {foods.length > 0 ? (

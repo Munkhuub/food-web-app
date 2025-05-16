@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/app/_providers/AuthProvider";
 import React, {
   createContext,
   useContext,
@@ -23,15 +24,15 @@ interface CartContextType {
   removeItem: (id: string) => void;
   updateQuantity: (id: string, newQuantity: number) => void;
   calculateTotal: () => string;
-  clearCart: () => void; // <--- ADDED THIS
+  clearCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { user } = useAuth();
 
-  // Load cart from localStorage on initial render
   useEffect(() => {
     const savedCart = localStorage.getItem("foodCart");
     if (savedCart) {
@@ -39,12 +40,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // Save to localStorage whenever cart changes
   useEffect(() => {
     localStorage.setItem("foodCart", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (food: any, quantity: number) => {
+    if (!user) {
+      toast.error("Please log in to place an order.");
+      return;
+    }
     try {
       const foodId =
         food._id || `food-${food.foodName.replace(/\s+/g, "-").toLowerCase()}`;
@@ -55,7 +59,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
 
         if (existingItemIndex >= 0) {
-          // Create a new array with the updated item
           const newItems = [...prevItems];
           newItems[existingItemIndex] = {
             ...newItems[existingItemIndex],
@@ -63,7 +66,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           };
           return newItems;
         } else {
-          // Add new item to cart
           return [
             ...prevItems,
             {
@@ -118,12 +120,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       .toFixed(2);
   };
 
-  // <--- ADDED THIS FUNCTION
   const clearCart = () => {
-    setCartItems([]); // Set cart items to an empty array
-    toast.info("Your cart has been cleared."); // Optional: show a toast
+    setCartItems([]);
   };
-  // ADDED THIS FUNCTION --->
 
   return (
     <CartContext.Provider
@@ -133,7 +132,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeItem,
         updateQuantity,
         calculateTotal,
-        clearCart, // <--- ADDED THIS
+        clearCart,
       }}
     >
       {children}
@@ -141,7 +140,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Custom hook to use the cart context
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === undefined) {

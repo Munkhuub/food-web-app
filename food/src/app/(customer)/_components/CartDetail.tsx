@@ -1,36 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Cart } from "./_assets/Cart";
-import { MapIcon, Minus, Plus, ShoppingCartIcon, X } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Minus, Plus, ShoppingCartIcon, X } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useCart } from "./CartContext";
-import OrderFoodIcon from "./_assets/OrderFoodIcon";
-import OrderDateIcon from "./_assets/OrderDateIcon";
-import OrderMapIcon from "./_assets/OrderMapIcon";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import axios from "axios";
-import { formatDate } from "date-fns";
+import OrderHistory from "../OrderHistory";
 
 type OrderHistoryItem = {
   _id: string;
@@ -51,9 +37,15 @@ const CartDetail = () => {
   const [orderHistory, setOrderHistory] = useState<OrderHistoryItem[]>([]);
   const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
+  console.log(user);
+
   const handlePlaceOrder = async () => {
     if (!user) {
       toast.error("Please log in to place an order.");
+      return;
+    }
+    if (!user?.address) {
+      toast.error("Please update your address to place an order.");
       return;
     }
     if (cartItems.length === 0) {
@@ -79,18 +71,12 @@ const CartDetail = () => {
           },
         }
       );
-
-      if (response.status === 200) {
-        toast.success("Order placed successfully!");
-        clearCart();
-        setActiveTab("history");
-        fetchOrderHistory();
-      } else {
-        toast.error("Failed to place order.");
-      }
+      toast.success("Order placed successfully!");
+      clearCart();
+      setActiveTab("history");
     } catch (error) {
       console.error("Error placing order:", error);
-      toast.error("Error placing order. Please try again.");
+      toast.error("Failed to place order.");
     }
   };
 
@@ -117,7 +103,6 @@ const CartDetail = () => {
     }
   };
 
-  // Use useEffect to fetch orders when the tab becomes active AND when user changes/logs in
   useEffect(() => {
     if (open && activeTab === "history" && user) {
       fetchOrderHistory();
@@ -252,83 +237,10 @@ const CartDetail = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          <TabsContent value="history">
-            <Card>
-              <CardHeader>
-                <CardTitle>Order history</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 ">
-                <div className="max-h-160 overflow-auto scroll-auto">
-                  {isLoadingOrders ? (
-                    <div className="text-center text-gray-500">
-                      Loading order history...
-                    </div>
-                  ) : orderHistory.length > 0 ? (
-                    orderHistory.map((order) => (
-                      <div key={order._id} className="space-y-4 ">
-                        <div className="flex flex-col gap-3 border-b pb-4 border-gray-200 last:border-b-0">
-                          <div className="flex justify-between items-center">
-                            <div className="flex gap-2">
-                              <span className="font-bold">
-                                ${order.totalPrice.toFixed(2)}
-                              </span>
-                              <span className="text-gray-600">
-                                (#{order.orderNumber})
-                              </span>
-                            </div>
-                            <Button
-                              className={`bg-white border text-xs rounded-full w-[68px] h-[28px] ${
-                                order.status === "Pending"
-                                  ? "border-[#EF4444] text-[#EF4444]"
-                                  : "border-green-500 text-green-500"
-                              }`}
-                            >
-                              {order.status}
-                            </Button>
-                          </div>
-                          {order.foodOrderItems.map((item, itemIndex) => (
-                            <div
-                              key={itemIndex}
-                              className="flex justify-between"
-                            >
-                              <div className="flex gap-2 items-center">
-                                <OrderFoodIcon />
-                                <p>{item.food.foodName}</p>
-                              </div>
-                              <div>x{item.quantity}</div>
-                            </div>
-                          ))}
-                          <div className="flex justify-between">
-                            <div className="flex gap-2 items-center">
-                              <OrderDateIcon />
-                              <p>
-                                {formatDate(
-                                  new Date(order.createdAt),
-                                  "yyyy-MM-dd HH:mm"
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex justify-between">
-                            <div className="flex gap-2 items-center">
-                              <OrderMapIcon />
-                              <p className="max-w-[70%] truncate">
-                                {order.shippingAddress}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="p-6 text-center text-gray-500">
-                      No order history found.
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          <OrderHistory
+            orderHistory={orderHistory}
+            isLoadingOrders={isLoadingOrders}
+          />
         </Tabs>
       </SheetContent>
     </Sheet>

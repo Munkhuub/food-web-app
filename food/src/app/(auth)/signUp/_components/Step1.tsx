@@ -14,11 +14,6 @@ type Step1Type = {
   handleNext: () => void;
 };
 
-type Values = {
-  setValues: string;
-  values: string;
-};
-
 export const schema = z.object({
   email: z
     .string()
@@ -26,8 +21,6 @@ export const schema = z.object({
 });
 
 export const Step1 = ({ handleNext }: Step1Type) => {
-  const router = useRouter();
-  const { user, signUp } = useAuth();
   const context = useContext(StepContext);
 
   if (!context) {
@@ -57,11 +50,11 @@ export const Step1 = ({ handleNext }: Step1Type) => {
           handleNext();
         })}
       >
-        {/* <Link href="/"> */}
-        <Button variant="outline" size="icon">
-          <ChevronLeft />
-        </Button>
-        {/* </Link> */}
+        <Link href="/">
+          <Button variant="outline" size="icon">
+            <ChevronLeft />
+          </Button>
+        </Link>
         <div>
           <h3 className="text-2xl font-semibold">Create your account</h3>
           <p className="text-[#71717A]">

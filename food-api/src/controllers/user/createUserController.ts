@@ -10,6 +10,8 @@ export const createUserController = async (req, res) => {
     orderedFoods,
     ttl,
     isVerified,
+    name,
+    image,
   } = req.body;
 
   try {
@@ -22,6 +24,8 @@ export const createUserController = async (req, res) => {
       orderedFoods,
       ttl,
       isVerified,
+      name,
+      image,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -1,9 +1,9 @@
 "use client";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "react";
+import { api, setAuthToken } from "@/axios";
 
 export type User = {
   _id: string;
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     password: string;
   }) => {
     try {
-      const { data } = await axios.post("http://localhost:3001/auth/signin", {
+      const { data } = await api.post("/auth/signin", {
         email,
         password,
       });
@@ -59,14 +59,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setUser(data.user);
 
       router.push("/");
-    } catch (error: any) {
-      console.error("Login error:", error);
-      if (error.response?.status === 401) {
-        toast.error("Invalid email or password");
-      } else {
-        toast.error("Something went wrong");
-      }
-      throw error;
+    } catch (error) {
+      console.error("Signin error:", error);
+      toast.error("Failed to sign in");
     }
   };
 
@@ -78,14 +73,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     password: string;
   }) => {
     try {
-      const { data } = await axios.post("http://localhost:3001/auth/signup", {
+      const { data } = await api.post("/auth/signup", {
         email,
         password,
       });
       localStorage.setItem("token", data.token);
       setUser(data.user);
       router.push("/signin");
-    } catch (error) {
+    } catch {
       toast.error("Failed to sign up");
     }
   };
@@ -99,11 +94,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const token = localStorage.getItem("token");
 
     if (!token) return;
-
+    setAuthToken(token);
     const getUser = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get("http://localhost:3001/auth/me", {
+        const { data } = await api.get("/auth/me", {
           headers: {
             Authorization: `${token}`,
           },

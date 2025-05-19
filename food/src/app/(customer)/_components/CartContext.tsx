@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import { toast } from "sonner";
+import { FoodsType } from "./Foods";
 
 interface CartItem {
   id: string;
@@ -20,7 +21,7 @@ interface CartItem {
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (food: any, quantity: number) => void;
+  addToCart: (food: FoodsType, quantity: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, newQuantity: number) => void;
   calculateTotal: () => string;
@@ -44,7 +45,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("foodCart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (food: any, quantity: number) => {
+  const addToCart = (food: FoodsType, quantity: number) => {
     if (!user) {
       toast.error("Please log in to place an order.");
       return;

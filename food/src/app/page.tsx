@@ -5,8 +5,8 @@ import { MainBanner } from "./(customer)/_components/MainBanner";
 import { Categories } from "./(customer)/_components/Categories";
 import { Footer } from "./(customer)/_components/Footer";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Foods } from "./(customer)/_components/Foods";
+import { api } from "@/axios";
 export type CategoryType = {
   categoryName: string;
   _id: string;
@@ -16,7 +16,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const getCategories = async () => {
-    const response = await axios.get("http://localhost:3001/category");
+    const response = await api.get("/category");
     setCategory(response.data.categories);
     console.log("homepage categories:", response);
   };

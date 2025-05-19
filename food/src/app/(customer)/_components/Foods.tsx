@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { FoodCard } from "./FoodCard";
+import { api } from "@/axios";
 
 export type FoodsType = {
   foodName: string;
@@ -28,9 +28,7 @@ export const Foods = ({
   const getFoods = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:3001/food?categoryId=${categoryId}`
-      );
+      const response = await api.get(`/food?categoryId=${categoryId}`);
       setFoods(response.data.food || []);
     } catch (error) {
       console.error("Error fetching foods:", error);

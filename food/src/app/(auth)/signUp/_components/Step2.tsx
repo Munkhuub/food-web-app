@@ -62,9 +62,8 @@ export const Step2 = ({ handlePrev }: Step2type) => {
           setValues(updatedValues);
           try {
             await signUp({ email: values.email, password: data.password });
-          } catch (error: any) {
-            console.error("Signup failed", error);
-            toast.error(error?.message || "Signup failed");
+          } catch {
+            toast.error("Signup failed");
           }
         })}
       >
@@ -134,7 +133,7 @@ export const Step2 = ({ handlePrev }: Step2type) => {
           }`}
           type="submit"
         >
-          Let's Go
+          Lets Go
         </Button>
         <div className="w-full flex justify-center">
           <div className="flex gap-3">

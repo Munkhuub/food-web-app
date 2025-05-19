@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronRight, UserIcon } from "lucide-react";
 import { useState } from "react";
-import axios from "axios";
 import { UpdateProfileImage } from "./UpdateProfileImage";
+import { api } from "@/axios";
 
 export const MyProfile = () => {
   const { user, setUser } = useAuth();
@@ -28,7 +28,7 @@ export const MyProfile = () => {
 
     try {
       const userId = user?._id;
-      const { data } = await axios.put(`http://localhost:3001/user/${userId}`, {
+      await api.put(`/user/${userId}`, {
         name: userName,
         image: userImage,
       });

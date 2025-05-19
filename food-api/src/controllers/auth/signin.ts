@@ -10,7 +10,7 @@ export const signin = async (req, res) => {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      console.log("User not found"); // 🔍 Log missing user
+      console.log("User not found");
       res.status(404).json({ message: "Usernama or password invalid" });
       return;
     }

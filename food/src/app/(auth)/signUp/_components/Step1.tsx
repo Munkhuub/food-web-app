@@ -1,14 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Ghost } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext } from "react";
-import { FormValues, StepContext } from "../../StepProvider";
-import { AuthProvider, useAuth } from "@/app/_providers/AuthProvider";
+import { StepContext } from "../../StepProvider";
 
 type Step1Type = {
   handleNext: () => void;
@@ -85,7 +83,7 @@ export const Step1 = ({ handleNext }: Step1Type) => {
           }`}
           type="submit"
         >
-          Let's Go
+          Lets Go
         </Button>
         <div className="w-full flex justify-center">
           <div className="flex gap-3">

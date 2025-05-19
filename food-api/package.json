@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "start": " node api/index.ts",
+    "deploy": "vercel",
+    "login": "vercel login"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "nodemon": "^3.1.9",
@@ -23,9 +28,10 @@
     "dotenv": "^16.5.0",
     "env": "^0.0.2",
     "express": "^5.1.0",
+    "force": "^0.0.3",
     "jsonwebtoken": "^9.0.2",
-    "mogoose": "^0.0.1-security",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.13.2"
+    "mongoose": "^8.13.2",
+    "vercel": "^41.7.8"
   }
 }

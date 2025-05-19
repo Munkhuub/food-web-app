@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useContext, useState } from "react";
-import { FormValues, StepContext } from "../../StepProvider";
-import { schema } from "@/app/(auth)/signup/_components/Step1";
-import { Step2type } from "../../signup/_components/Step2";
+import { StepContext } from "../../StepProvider";
+import Image from "next/image";
 
 type ForgotPassPropsType = {
   handlePrev: () => void;
 };
+
 const forgotPasswordSchema = z
   .object({
     password: z.string().min(6, "Password must be at least 6 characters"),
@@ -24,7 +23,6 @@ const forgotPasswordSchema = z
   });
 
 export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const context = useContext(StepContext);
   if (!context) {
@@ -41,11 +39,15 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
     },
   });
 
+  const onSubmit = (data: z.infer<typeof forgotPasswordSchema>) => {
+    setValues({ ...values, ...data });
+  };
+
   return (
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
         className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
-        onSubmit={handleSubmit((submit) => {})}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <Button variant="outline" size="icon" onClick={() => handlePrev()}>
           <ChevronLeft />
@@ -111,11 +113,11 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
           }`}
           type="submit"
         >
-          Let's Go
+          <p>Lets Go</p>
         </Button>
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
-            <p className="text-[#71717A]">Don't have an account?</p>
+            <p className="text-[#71717A]">Dont have an account?</p>
             <Link href="/signup" className="text-[#2563EB]">
               Sign up
             </Link>
@@ -123,10 +125,13 @@ export const ForgotPass = ({ handlePrev }: ForgotPassPropsType) => {
         </div>
       </form>
       <div className="h-full w-[856px]">
-        <img
+        <Image
           className="h-full"
           src="/images/signUp/signup.png"
           alt="Delivery image"
+          width={856}
+          height={900}
+          priority
         />
       </div>
     </div>

@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { Profile } from "./_assets/Profile";
 import { useEffect, useState } from "react";
-import { ChevronRight, UserIcon } from "lucide-react";
 import MyProfile from "./MyProfile";
 
 export const UserProfile = () => {

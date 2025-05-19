@@ -108,7 +108,7 @@ export const Login = ({ handlePrev }: LoginPropsType) => {
 
         <div className="w-full flex justify-center">
           <div className="flex gap-3">
-            <p className="text-[#71717A]">Don't have an account?</p>
+            <p className="text-[#71717A]">Dont have an account?</p>
             <Link href="/signup" className="text-[#2563EB]">
               Sign up
             </Link>

@@ -15,8 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useCart } from "./CartContext";
 import { useAuth } from "@/app/_providers/AuthProvider";
-import axios from "axios";
-import OrderHistory from "../OrderHistory";
+import OrderHistory from "./OrderHistory";
+import { api } from "@/axios";
 
 type OrderHistoryItem = {
   _id: string;
@@ -54,8 +54,8 @@ const CartDetail = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3001/orders",
+      await api.post(
+        "/orders",
         {
           user: user._id,
           totalPrice: calculateTotal(),
@@ -88,7 +88,7 @@ const CartDetail = () => {
 
     setIsLoadingOrders(true);
     try {
-      const response = await axios.get(`http://localhost:3001/orders`, {
+      const response = await api.get(`/orders`, {
         headers: {
           Authorization: `${localStorage.getItem("token")}`,
         },

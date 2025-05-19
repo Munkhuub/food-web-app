@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { ChevronRightIcon, MapPin } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { toast } from "sonner";
+import { api } from "@/axios";
 
 const DeliveryAddress = ({}) => {
   const [userAddress, setUserAddress] = useState("");
@@ -45,7 +45,7 @@ const DeliveryAddress = ({}) => {
     try {
       const userId = user?._id;
 
-      const { data } = await axios.put(`http://localhost:3001/user/${userId}`, {
+      const { data } = await api.put(`/user/${userId}`, {
         address: userAddress,
       });
       setUser((prev) => {
@@ -71,7 +71,7 @@ const DeliveryAddress = ({}) => {
 
     setIsSubmitting(true);
     try {
-      const { data } = await axios.put(`http://localhost:3001/user/${userId}`, {
+      await api.put(`/user/${userId}`, {
         address: "",
       });
       setUser((prev) => {

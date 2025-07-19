@@ -21,10 +21,16 @@ export const CategoryFoods = ({
   categoryName,
 }: CategoryFoodsProps) => {
   const [foods, setFoods] = useState<FoodsTypeCategory[]>([]);
-  const getFoods = useCallback(async () => {
-    const { data } = await api.get(`/food?categoryId=${categoryId}`);
 
-    setFoods(data.food);
+  const getFoods = useCallback(async () => {
+    try {
+      const { data } = await api.get(`/food?categoryId=${categoryId}`);
+
+      setFoods(data.food);
+    } catch (error) {
+      console.error("Error fetching food:", error);
+      setFoods([]);
+    }
   }, [categoryId]);
 
   useEffect(() => {
@@ -32,11 +38,11 @@ export const CategoryFoods = ({
   }, [getFoods]);
 
   return (
-    <div className="bg-white p-5 rounded-xl flex flex-col gap-4">
-      <h4 className="text-xl font-semibold">
+    <div className="bg-white p-3 sm:p-4 lg:p-5 rounded-xl flex flex-col gap-3 sm:gap-4">
+      <h4 className="text-lg sm:text-xl font-semibold">
         {categoryName} ({foods.length})
       </h4>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
         <AddFood
           getFoods={getFoods}
           categoryId={categoryId}

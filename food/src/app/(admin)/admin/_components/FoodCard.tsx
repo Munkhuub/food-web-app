@@ -11,22 +11,24 @@ type FoodCardProps = {
 export const FoodCard = ({ food, categoryId, getFoods }: FoodCardProps) => {
   return (
     <Card className="w-full p-0">
-      <CardContent className="p-4 rounded-[20px] flex flex-col gap-2 relative">
+      <CardContent className="p-3 sm:p-4 rounded-[20px] flex flex-col gap-2 relative">
         <img
           src={food?.image}
-          className="h-[129px] w-full object-cover rounded-xl"
+          className="h-[100px] sm:h-[129px] w-full object-cover rounded-xl"
         />
         <EditFood food={food} categoryId={categoryId} getFoods={getFoods} />
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between">
-            <h3 className="text-[14px] text-[#EF4444] font-semibold">
+          <div className="flex justify-between items-start">
+            <h3 className="text-xs sm:text-[14px] text-[#EF4444] font-semibold leading-tight flex-1 min-w-0 pr-2">
               {food.foodName}
             </h3>
-            <p className="text-xs font-semibold">
+            <p className="text-xs font-semibold whitespace-nowrap">
               {food.price.toLocaleString()}$
             </p>
           </div>
-          <p className="text-xs">{food.ingredients}</p>
+          <p className="text-xs leading-relaxed line-clamp-2 text-gray-600">
+            {food.ingredients}
+          </p>
         </div>
       </CardContent>
     </Card>

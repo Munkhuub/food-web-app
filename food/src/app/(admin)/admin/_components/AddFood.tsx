@@ -112,61 +112,63 @@ export const AddFood = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="w-[270.75px] h-[241px] border border-dashed border-[#EF4444] rounded-[20px] flex flex-col gap-6 justify-center items-center cursor-pointer">
-          <Button className="size-10 rounded-full bg-[#EF4444] flex items-center justify-center">
-            <Plus className="text-white size-4" />
+        <div className="w-full aspect-[270/241] border border-dashed border-[#EF4444] rounded-[20px] flex flex-col gap-3 sm:gap-6 justify-center items-center cursor-pointer p-4">
+          <Button className="size-8 sm:size-10 rounded-full bg-[#EF4444] flex items-center justify-center">
+            <Plus className="text-white size-3 sm:size-4" />
           </Button>
-          <div className="text-[14px] text-center">
+          <div className="text-xs sm:text-[14px] text-center leading-tight">
             Add new Dish to <br /> {categoryName}
           </div>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] mx-4 sm:mx-0 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add new Dish to {categoryName}</DialogTitle>
+          <DialogTitle className="text-base sm:text-lg">
+            Add new Dish to {categoryName}
+          </DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex flex-col gap-2 flex-1">
-              <Label htmlFor="food-name" className="text-right">
+              <Label htmlFor="food-name" className="text-left">
                 Food name
               </Label>
               <Input
                 id="food-name"
                 value={foodName}
-                className="col-span-3"
+                className="w-full"
                 onChange={(e) => setFoodName(e.target.value)}
               />
             </div>
             <div className="flex flex-col gap-2 flex-1">
-              <Label htmlFor="food-price" className="text-right">
+              <Label htmlFor="food-price" className="text-left">
                 Food price
               </Label>
               <Input
                 type="number"
                 value={price}
-                className="col-span-3"
+                className="w-full"
                 onChange={(e) => setPrice(e.target.value)}
               />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="ingredients" className="text-top">
+            <Label htmlFor="ingredients" className="text-left">
               Ingredients
             </Label>
             <Textarea
               value={ingredients}
-              className="h-[90px]"
+              className="h-[90px] resize-none"
               onChange={(e) => setIngredients(e.target.value)}
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="food-image" className="text-top">
+            <Label htmlFor="food-image" className="text-left">
               Food image
             </Label>
             {deployedImg ? (
-              <div className="relative w-full h-[150px] border rounded-md overflow-hidden flex items-center justify-center">
+              <div className="relative w-full h-[120px] sm:h-[150px] border rounded-md overflow-hidden flex items-center justify-center">
                 <img
                   src={deployedImg}
                   alt="Uploaded food image"
@@ -176,7 +178,7 @@ export const AddFood = ({
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="absolute top-2 right-2 rounded-full"
+                  className="absolute top-2 right-2 rounded-full size-8"
                   onClick={() => setDeployedImg("")}
                 >
                   <XIcon className="size-4" />
@@ -185,7 +187,7 @@ export const AddFood = ({
             ) : (
               <Input
                 id="food-image"
-                className="h-[90px] cursor-pointer"
+                className="h-[60px] sm:h-[90px] cursor-pointer"
                 onChange={handleFileChange}
                 type="file"
                 accept="image/*"
@@ -193,13 +195,14 @@ export const AddFood = ({
             )}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
           <Button
             type="submit"
             onClick={handleCreate}
             disabled={
               loading || !deployedImg || !foodName || !price || !ingredients
             }
+            className="w-full sm:w-auto"
           >
             {loading ? (
               <>

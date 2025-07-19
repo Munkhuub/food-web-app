@@ -23,18 +23,18 @@ export const Foods = ({
   selectedCategory,
 }: AppetizersType) => {
   const [foods, setFoods] = useState<FoodsType[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState(false);
 
   const getFoods = async () => {
     try {
-      setLoading(true);
+      setError(false);
       const response = await api.get(`/food?categoryId=${categoryId}`);
       setFoods(response.data.food || []);
     } catch (error) {
       console.error("Error fetching foods:", error);
+      setError(true);
       setFoods([]);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -42,29 +42,32 @@ export const Foods = ({
     getFoods();
   }, [categoryId]);
 
-  if (loading) {
-    return (
-      <div className="px-22 bg-[#404040] pt-10 pb-[54px]">
-        <h2 className="text-3xl font-semibold text-white">{categoryName}</h2>
-        <div className="text-white text-center py-16">Loading dishes...</div>
-      </div>
-    );
-  }
-
   if (!foods.length && !selectedCategory) return null;
 
   return (
-    <div className="px-22 bg-[#404040] pb-[54px]">
-      <h2 className="text-3xl font-semibold text-white">{categoryName}</h2>
+    <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 bg-[#404040] pb-8 sm:pb-12 md:pb-[54px]">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+        {categoryName}
+      </h2>
 
-      {foods.length > 0 ? (
-        <div className="grid grid-cols-3 gap-9 mt-[54px]">
-          {foods.map((food, i) => (
-            <FoodCard food={food} key={i} />
+      {error ? (
+        <div className="text-white text-center py-10 sm:py-16 mt-6 sm:mt-8 md:mt-[54px] border border-gray-700 rounded-lg bg-[#353535]">
+          <p className="text-red-400 mb-2">Failed to load dishes</p>
+          <button
+            onClick={getFoods}
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-md transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      ) : foods.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-[54px]">
+          {foods.map((food) => (
+            <FoodCard food={food} key={food._id} />
           ))}
         </div>
       ) : (
-        <div className="text-white text-center py-16 mt-[54px] border border-gray-700 rounded-lg bg-[#353535]">
+        <div className="text-white text-center py-10 sm:py-16 mt-6 sm:mt-8 md:mt-[54px] border border-gray-700 rounded-lg bg-[#353535]">
           No dishes available in this category.
         </div>
       )}

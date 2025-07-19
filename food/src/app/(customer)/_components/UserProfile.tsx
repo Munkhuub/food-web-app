@@ -1,11 +1,8 @@
-"use client";
-
 import { useAuth } from "@/app/_providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,12 +10,20 @@ import {
 import { Profile } from "./_assets/Profile";
 import { useEffect, useState } from "react";
 import MyProfile from "./MyProfile";
+import { LogOut, User } from "lucide-react";
 
-export const UserProfile = () => {
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  image?: string;
+}
+
+export const UserProfile: React.FC = () => {
   const { user, signOut } = useAuth();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [open, setOpen] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [open, setOpen] = useState<boolean>(false);
 
   console.log("UserProfile rendered with user:", user);
 
@@ -29,46 +34,75 @@ export const UserProfile = () => {
     }
   }, [user]);
 
+  const handleSignOut = (): void => {
+    signOut();
+    setOpen(false);
+  };
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full bg-[#EF4444] border-none"
+          className="rounded-full bg-gradient-to-br from-red-500 to-red-600 border-none hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg hover:shadow-xl"
         >
           <Profile />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[308px] !top-[154px] !left-[88%]">
-        <DialogHeader>
-          <DialogTitle>
-            <div className="flex gap-2 items-center ">
-              <img
-                src={user?.image}
-                className="size-12 rounded-full bg-black"
-              />
+
+      <DialogContent className="sm:max-w-[320px] p-0 overflow-hidden bg-white shadow-2xl border-0">
+        <DialogHeader className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
+          <DialogTitle className="text-left">
+            <div className="flex gap-3 items-center">
               <div>
-                <p className="text-xs">{name}</p>
-                <p className="text-xs">{email}</p>
+                {user.image ? (
+                  <img
+                    src={user.image}
+                    alt="Profile"
+                    className="w-12 h-12 rounded-full object-cover bg-gray-200 ring-2 ring-white shadow-sm"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center ring-2 ring-white shadow-sm">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-900 truncate">
+                  {name}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{email}</p>
               </div>
             </div>
           </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4 mb-auto">
+
+        <div className="px-6 py-4 space-y-3">
           <MyProfile />
-          <DialogFooter className="flex justify-between items-center">
+
+          <div className="pt-3 border-t border-gray-100">
             <Button
-              variant="destructive"
-              onClick={() => {
-                signOut();
-                setOpen(false);
-              }}
+              variant="ghost"
+              onClick={handleSignOut}
               type="button"
+              className="w-full justify-start gap-3 px-3 py-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors rounded-lg"
             >
-              Sign Out
+              <div className="p-2 bg-red-50 rounded-lg">
+                <LogOut className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium">Sign Out</p>
+                <p className="text-xs text-gray-500">
+                  Sign out of your account
+                </p>
+              </div>
             </Button>
-          </DialogFooter>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

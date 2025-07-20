@@ -1,24 +1,19 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useState, useCallback } from "react";
 import { StepContext } from "../../StepProvider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/app/_providers/AuthProvider";
 
-type LoginPropsType = {
-  handlePrev: () => void;
-};
 export const loginSchema = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export const Login = ({ handlePrev }: LoginPropsType) => {
+export const Login = () => {
   const context = useContext(StepContext);
   const { signIn } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,95 +27,123 @@ export const Login = ({ handlePrev }: LoginPropsType) => {
     resolver: zodResolver(loginSchema),
     mode: "onChange",
     defaultValues: {
-      email: values?.email,
+      email: values?.email || "",
       password: values?.password || "",
     },
   });
 
+  const onSubmit = useCallback(
+    async (data: { email: string; password: string }) => {
+      setIsSubmitting(true);
+      const updatedValues = {
+        ...values,
+        email: data.email,
+        password: data.password,
+      };
+      setValues(updatedValues);
+
+      try {
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (error) {
+        console.error("Login failed", error);
+        setIsSubmitting(false);
+      }
+    },
+    [values, setValues, signIn]
+  );
+
   return (
-    <div className="flex gap-12 p-5 w-full h-screen justify-center">
-      <form
-        className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
-        onSubmit={handleSubmit(async (data) => {
-          setIsSubmitting(true);
-          const updatedValues = {
-            ...values,
-            email: data.email,
-            password: data.password,
-          };
-          setValues(updatedValues);
-          try {
-            await signIn({
-              email: data.email,
-              password: data.password,
-            });
-          } catch (error) {
-            console.error("Login failed", error);
-            setIsSubmitting(false);
-          }
-        })}
-      >
-        <Button variant="outline" size="icon" onClick={handlePrev}>
-          <ChevronLeft />
-        </Button>
-
-        <div>
-          <h3 className="text-2xl font-semibold">Log in</h3>
-          <p className="text-[#71717A]">
-            Log in to enjoy your favorite dishes.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <div className="w-full h-9 px-3 py-2 border-[1px] border-[#E4E4E7] rounded-md">
-            <input
-              type="email"
-              placeholder="Enter your mail address"
-              className="h-5 flex items-center text-[14px] w-full border-none"
-              {...register("email")}
-            />
-          </div>
-          {formState.errors.email && (
-            <div className="text-[#E14942] text-[14px]">
-              {formState.errors.email.message}
-            </div>
-          )}
-          <div className="w-full h-9 px-3 py-2 border-[1px] border-[#E4E4E7] rounded-md">
-            <input
-              type="password"
-              placeholder="Password"
-              className="h-5 flex items-center text-[14px] w-full border-none"
-              {...register("password")}
-            />
-          </div>
-          <p>Forgot password ?</p>
-        </div>
-        <Button
-          className={`w-full transition-none hover:bg-black hover:text-black ${
-            formState.isValid && !isSubmitting
-              ? "bg-black text-white"
-              : "bg-[#d1d1d1] text-[white] hover:bg-[#d1d1d1] hover:text-black"
-          }`}
-          type="submit"
-          disabled={!formState.isValid || isSubmitting}
+    <div className="flex flex-col lg:flex-row min-h-screen ">
+      <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 justify-center">
+        <form
+          className="max-w-md w-full mx-auto mt-8 lg:mt-0 lg:max-w-[416px] flex flex-col gap-6"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          {isSubmitting ? "Logging In..." : "Let's Go"}
-        </Button>
+          <Link href="/">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Go back"
+              className="self-start"
+            >
+              <ChevronLeft />
+            </Button>
+          </Link>
 
-        <div className="w-full flex justify-center">
-          <div className="flex gap-3">
-            <p className="text-[#71717A]">Dont have an account?</p>
-            <Link href="/signup" className="text-[#2563EB]">
+          <div>
+            <h3 className="text-2xl font-semibold">Log in</h3>
+            <p className="text-muted-foreground">
+              Log in to enjoy your favorite dishes.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <div className="px-3 py-2 border rounded-md">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="w-full text-sm bg-transparent border-none focus:outline-none"
+                  {...register("email")}
+                  aria-invalid={!!formState.errors.email}
+                />
+              </div>
+              {formState.errors.email && (
+                <p className="text-destructive text-sm">
+                  {formState.errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <div className="px-3 py-2 border rounded-md">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className="w-full text-sm bg-transparent border-none focus:outline-none"
+                  {...register("password")}
+                  aria-invalid={!!formState.errors.password}
+                />
+              </div>
+            </div>
+          </div>
+
+          <Button
+            className={`w-full transition-colors ${
+              formState.isValid && !isSubmitting
+                ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
+            }`}
+            type="submit"
+            disabled={!formState.isValid || isSubmitting}
+            aria-disabled={!formState.isValid || isSubmitting}
+          >
+            {isSubmitting ? "Logging In..." : "Let's Go"}
+          </Button>
+
+          <div className="text-center text-sm">
+            <span className="text-muted-foreground">
+              Do not have an account?{" "}
+            </span>
+            <Link href="/signup" className="text-primary hover:underline">
               Sign up
             </Link>
           </div>
+        </form>
+      </div>
+
+      <div className="hidden lg:block lg:w-1/2">
+        <div className="h-full w-full flex items-center justify-center p-8">
+          <img
+            className="object-contain w-full h-full max-h-[80vh]"
+            src="/images/signUp/signup.png"
+            alt="Food delivery illustration"
+            loading="lazy"
+          />
         </div>
-      </form>
-      <div className="h-full w-[856px]">
-        <img
-          className="h-full"
-          src="/images/signUp/signup.png"
-          alt="Delivery image"
-        />
       </div>
     </div>
   );

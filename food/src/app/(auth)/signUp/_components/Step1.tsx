@@ -38,7 +38,7 @@ export const Step1 = ({ handleNext }: Step1Type) => {
   return (
     <div className="flex gap-12 p-5 w-full h-screen justify-center">
       <form
-        className="w-[416px] mt-[246px] ml-20 flex flex-col gap-6"
+        className="w-[416px] mt-[246px] lg:ml-20 flex flex-col gap-6"
         onSubmit={handleSubmit((data) => {
           const updatedValues = {
             ...values,
@@ -94,7 +94,7 @@ export const Step1 = ({ handleNext }: Step1Type) => {
           </div>
         </div>
       </form>
-      <div className="h-full w-[856px]">
+      <div className="hidden h-full lg:block lg:w-[856px]">
         <img
           className="h-full"
           src="/images/signUp/signup.png"

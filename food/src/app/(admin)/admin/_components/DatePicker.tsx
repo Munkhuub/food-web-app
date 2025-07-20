@@ -33,12 +33,10 @@ export function DatePickerWithRange({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Notify parent about date changes
   React.useEffect(() => {
     onDateRangeChange?.(date);
   }, [date, onDateRangeChange]);
 
-  // Close popover when date range is selected on mobile
   React.useEffect(() => {
     if (isMobile && date?.from && date?.to) {
       setIsOpen(false);

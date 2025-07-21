@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         email,
         password,
       });
-      console.log("SignIn response data:", data);
       localStorage.setItem("token", data.token);
       setUser(data.user);
 
@@ -88,6 +87,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const signOut = async () => {
     localStorage.removeItem("token");
+    setAuthToken(null);
     setUser(undefined);
   };
 

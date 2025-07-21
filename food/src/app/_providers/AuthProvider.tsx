@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } catch (error) {
       console.error("Signin error:", error);
       toast.error("Failed to sign in");
+      throw error;
     }
   };
 

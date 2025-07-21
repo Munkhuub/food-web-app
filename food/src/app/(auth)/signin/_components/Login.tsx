@@ -55,12 +55,20 @@ export const Login = () => {
     [values, setValues, signIn]
   );
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && formState.isValid && !isSubmitting) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen ">
       <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 justify-center">
         <form
           className="max-w-md w-full mx-auto mt-8 lg:mt-0 lg:max-w-[416px] flex flex-col gap-6"
           onSubmit={handleSubmit(onSubmit)}
+          onKeyDown={handleKeyDown}
         >
           <Link href="/">
             <Button

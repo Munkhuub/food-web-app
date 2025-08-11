@@ -10,11 +10,11 @@ type FoodCardProps = {
 
 export const FoodCard = ({ food, categoryId, getFoods }: FoodCardProps) => {
   return (
-    <Card className="w-full p-0 max-h-[271px]">
+    <Card className="w-full p-0 ">
       <CardContent className="p-3 sm:p-4 rounded-[20px] flex flex-col gap-2 relative">
         <img
           src={food?.image}
-          className="h-[100px] sm:h-[129px] w-full object-cover rounded-xl"
+          className="h-[100px] sm:h-[50%] w-full object-cover rounded-xl"
         />
         <EditFood food={food} categoryId={categoryId} getFoods={getFoods} />
         <div className="flex flex-col gap-2">

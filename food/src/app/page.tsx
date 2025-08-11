@@ -40,7 +40,6 @@ export default function Home() {
     setSelectedCategory("");
   };
 
-  console.log(category, "cat")
 
   return (
     <div className="w-full overflow-x-hidden">

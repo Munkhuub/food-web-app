@@ -17,7 +17,7 @@ export default function Home() {
   };
   return (
     <StepProvider>
-      <div className="lg:w-[1440px] m-auto relative">
+      <div className="lg:w-full m-auto relative">
         {step === 0 && <Step1 handleNext={handleNext} />}
         {step === 1 && <Step2 handlePrev={handlePrev} />}
       </div>

@@ -6,7 +6,7 @@ export default function LaAdminyout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex lg:w-[1440px] m-auto min-h-[100vh]">
+    <div className="flex lg:w-full m-auto min-h-[100vh]">
       <SideBar />
       {children}
     </div>

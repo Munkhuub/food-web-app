@@ -54,7 +54,7 @@ export const Header = () => {
                   Sign in
                 </Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/signUp">
                 <Button
                   variant="outline"
                   className="rounded-full bg-white border-none text-[#71717A] hover:bg-gray-100 text-xs sm:text-sm px-3 sm:px-4 py-1 transition-colors"

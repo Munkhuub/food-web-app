@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <StepProvider>
       <AuthProvider>
-        <div className="lg:w-[1440px] m-auto relative">
+        <div className="w-full m-auto relative">
           <Login />
         </div>
       </AuthProvider>

@@ -10,7 +10,7 @@ type FoodCardProps = {
 
 export const FoodCard = ({ food, categoryId, getFoods }: FoodCardProps) => {
   return (
-    <Card className="w-full p-0 min-h-[271px]">
+    <Card className="w-full p-0">
       <CardContent className="p-3 sm:p-4 rounded-[20px] flex flex-col gap-2 relative">
         <img
           src={food?.image}

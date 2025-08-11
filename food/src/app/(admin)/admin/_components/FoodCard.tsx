@@ -14,7 +14,7 @@ export const FoodCard = ({ food, categoryId, getFoods }: FoodCardProps) => {
       <CardContent className="p-3 sm:p-4 rounded-[20px] flex flex-col gap-2 relative">
         <img
           src={food?.image}
-          className="h-[50%] sm:h-[129px] w-full object-cover rounded-xl"
+          className="h-[200px] sm:h-[129px] w-full object-cover rounded-xl"
         />
         <EditFood food={food} categoryId={categoryId} getFoods={getFoods} />
         <div className="flex flex-col gap-2">

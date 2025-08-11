@@ -40,9 +40,11 @@ export default function Home() {
     setSelectedCategory("");
   };
 
+  console.log(category, "cat")
+
   return (
     <div className="w-full overflow-x-hidden">
-      <div className="max-w-[1440px] w-full mx-auto relative">
+      <div className="w-full mx-auto relative">
         <Header />
         <MainBanner />
 

@@ -23,7 +23,6 @@ export const Foods = ({
   selectedCategory,
 }: AppetizersType) => {
   const [foods, setFoods] = useState<FoodsType[]>([]);
-
   const [error, setError] = useState(false);
 
   const getFoods = async () => {
@@ -45,29 +44,29 @@ export const Foods = ({
   if (!foods.length && !selectedCategory) return null;
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 bg-[#404040] pb-8 sm:pb-12 md:pb-[54px]">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">
+    <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 bg-[#404040] pb-8 sm:pb-12 md:pb-16 lg:pb-20">
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white">
         {categoryName}
       </h2>
 
       {error ? (
-        <div className="text-white text-center py-10 sm:py-16 mt-6 sm:mt-8 md:mt-[54px] border border-gray-700 rounded-lg bg-[#353535]">
-          <p className="text-red-400 mb-2">Failed to load dishes</p>
+        <div className="text-white text-center py-10 sm:py-16 lg:py-20 mt-6 sm:mt-8 md:mt-10 lg:mt-12 border border-gray-700 rounded-lg bg-[#353535]">
+          <p className="text-red-400 mb-2 text-lg lg:text-xl">Failed to load dishes</p>
           <button
             onClick={getFoods}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-md transition-colors"
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-md transition-colors text-sm sm:text-base"
           >
             Retry
           </button>
         </div>
       ) : foods.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-[54px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10 mt-6 sm:mt-8 md:mt-10 lg:mt-12">
           {foods.map((food) => (
             <FoodCard food={food} key={food._id} />
           ))}
         </div>
       ) : (
-        <div className="text-white text-center py-10 sm:py-16 mt-6 sm:mt-8 md:mt-[54px] border border-gray-700 rounded-lg bg-[#353535]">
+        <div className="text-white text-center py-10 sm:py-16 lg:py-20 mt-6 sm:mt-8 md:mt-10 lg:mt-12 border border-gray-700 rounded-lg bg-[#353535] text-lg lg:text-xl">
           No dishes available in this category.
         </div>
       )}

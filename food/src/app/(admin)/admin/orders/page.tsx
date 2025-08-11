@@ -57,11 +57,11 @@ export default function Home() {
       return;
     }
 
-    // Apply date range filter
+    
     const filtered = orders.filter((order) => {
       const orderDate = parseISO(order.createdAt);
 
-      // If only "from" date is selected
+      
       if (dateRange.from && !dateRange.to) {
         return (
           isEqual(orderDate, dateRange.from) ||
@@ -69,7 +69,7 @@ export default function Home() {
         );
       }
 
-      // If both "from" and "to" dates are selected
+     
       if (dateRange.from && dateRange.to) {
         return (
           (isEqual(orderDate, dateRange.from) ||
@@ -85,35 +85,35 @@ export default function Home() {
     setFilteredOrders(filtered);
   }, [dateRange, orders]);
 
-  // Handle date range changes from the DatePicker
+  
   const handleDateRangeChange = (range: DateRange | undefined) => {
     setDateRange(range);
   };
 
-  // Reset filters
+  
   const resetFilters = () => {
     setDateRange(undefined);
     setFilteredOrders(orders);
   };
-  // Calculate pagination
+ 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // Get current orders for the page
+ 
   const currentOrders = useMemo(() => {
     return filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
   }, [filteredOrders, indexOfFirstItem, indexOfLastItem]);
 
-  // Handle page change
+ 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Handle items per page change
+
   const handleItemsPerPageChange = (value: string) => {
     setItemsPerPage(Number(value));
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1); 
   };
 
   if (!user) {

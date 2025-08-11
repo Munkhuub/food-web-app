@@ -8,7 +8,7 @@ type FoodCardProps = {
 
 export const FoodCard = ({ food }: FoodCardProps) => {
   return (
-    <div className="w-full max-w-[400px] h-auto p-3 sm:p-4 bg-white rounded-2xl md:rounded-[20px] flex flex-col gap-3 sm:gap-4 md:gap-5 relative shadow-md hover:shadow-lg transition-shadow">
+    <div className="w-full max-w-[280px] sm:max-w-[320px] md:max-w-[350px] lg:max-w-[380px] xl:max-w-[400px] h-auto p-3 sm:p-4 lg:p-5 bg-white rounded-2xl md:rounded-[20px] flex flex-col gap-3 sm:gap-4 md:gap-5 relative shadow-md hover:shadow-lg transition-shadow">
       <div className="relative overflow-hidden rounded-xl aspect-[1.9/1]">
         <img
           src={food?.image}
@@ -21,15 +21,15 @@ export const FoodCard = ({ food }: FoodCardProps) => {
       <AddToCard food={food} />
 
       <div className="flex flex-col gap-1 sm:gap-2">
-        <div className="flex justify-between items-start">
-          <h3 className="text-lg sm:text-xl md:text-2xl text-red-500 font-semibold line-clamp-1">
+        <div className="flex justify-between items-start gap-2">
+          <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-red-500 font-semibold line-clamp-2 flex-1 min-w-0">
             {food.foodName}
           </h3>
-          <p className="text-base sm:text-lg md:text-[18px] font-semibold whitespace-nowrap pl-2">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold whitespace-nowrap flex-shrink-0">
             ${food.price.toFixed(2)}
           </p>
         </div>
-        <p className="text-sm sm:text-base text-gray-600 line-clamp-2">
+        <p className="text-xs sm:text-sm md:text-base text-gray-600 line-clamp-2">
           {food.ingredients}
         </p>
       </div>

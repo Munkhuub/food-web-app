@@ -148,7 +148,7 @@ export const MainBanner: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-black overflow-hidden">
-      {/* Background elements */}
+      
       <div className="absolute inset-0">
         <div className="absolute top-10 left-10 sm:top-20 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80 2xl:w-96 2xl:h-96 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div
@@ -157,9 +157,9 @@ export const MainBanner: React.FC = () => {
         ></div>
       </div>
 
-      {/* Content */}
+      
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-12 lg:py-0 gap-8 lg:gap-16 xl:gap-24 2xl:gap-32">
-        {/* Text content */}
+      
         <div className="flex-1 max-w-2xl lg:max-w-none text-center lg:text-left">
           <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
             <h1 className={`${vpConfig.textSize} md:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight`}>
@@ -182,7 +182,7 @@ export const MainBanner: React.FC = () => {
           </div>
         </div>
 
-        {/* Circular carousel */}
+       
         <div className="flex-1 relative w-full max-w-md sm:max-w-lg lg:max-w-none flex justify-center">
           <div className={`relative ${vpConfig.container}`}>
             <div

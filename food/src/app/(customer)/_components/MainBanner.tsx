@@ -7,15 +7,20 @@ interface FoodItem {
   description: string;
 }
 
-type Viewport = "mobile" | "tablet" | "desktop";
+type Viewport = "mobile" | "tablet" | "desktop" | "xl" | "2xl";
 
 const useViewport = (): Viewport => {
-  const [viewport, setViewport] = useState<Viewport>("desktop");
+  const [viewport, setViewport] = useState<Viewport>("2xl");
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      setViewport(width < 640 ? "mobile" : width < 1024 ? "tablet" : "desktop");
+      setViewport(
+        width < 640 ? "mobile" :
+        width < 768 ? "tablet" :
+        width < 1024 ? "desktop" :
+        width < 1536 ? "xl" : "2xl"
+      );
     };
 
     handleResize();
@@ -30,34 +35,31 @@ export const MainBanner: React.FC = () => {
   const [currentFood, setCurrentFood] = useState(0);
   const viewport = useViewport();
   const animationRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const foodItems: FoodItem[] = useMemo(
     () => [
       {
         name: "Pizza",
-        image:
-          "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916609/pngtree-pizza-png-image_15719093_w8mb0a.png",
+        image: "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916609/pngtree-pizza-png-image_15719093_w8mb0a.png",
         color: "from-red-500 to-orange-500",
         description: "Italian perfection",
       },
       {
         name: "Burger",
-        image:
-          "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916728/pngtree-delicious-and-testy-cheese-burger-png-image_16763714_cgwht3.png",
+        image: "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916728/pngtree-delicious-and-testy-cheese-burger-png-image_16763714_cgwht3.png",
         color: "from-yellow-500 to-orange-600",
         description: "Classic comfort",
       },
       {
         name: "Sushi",
-        image:
-          "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916884/japanese-food-sushi-isolated-transparent-png_iksok8.png",
+        image: "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752916884/japanese-food-sushi-isolated-transparent-png_iksok8.png",
         color: "from-green-500 to-teal-500",
         description: "Japanese artistry",
       },
       {
         name: "Salad",
-        image:
-          "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752914768/406447349_70fdd95b-efea-499d-bad0-ae5fc57746ed_1_rconys.png",
+        image: "https://res.cloudinary.com/dpbmpprw5/image/upload/v1752914768/406447349_70fdd95b-efea-499d-bad0-ae5fc57746ed_1_rconys.png",
         color: "from-purple-500 to-pink-500",
         description: "Greece delight",
       },
@@ -65,7 +67,6 @@ export const MainBanner: React.FC = () => {
     []
   );
 
-  // Viewport configuration
   const vpConfig = useMemo(() => {
     return {
       mobile: {
@@ -74,6 +75,7 @@ export const MainBanner: React.FC = () => {
         border: "border-2",
         blur: "blur-xl",
         container: "w-64 h-64",
+        textSize: "text-3xl",
       },
       tablet: {
         radius: 140,
@@ -81,13 +83,31 @@ export const MainBanner: React.FC = () => {
         border: "border-3",
         blur: "blur-2xl",
         container: "w-80 h-80",
+        textSize: "text-4xl",
       },
       desktop: {
         radius: 180,
+        size: 160,
+        border: "border-4",
+        blur: "blur-2xl",
+        container: "w-[400px] h-[400px]",
+        textSize: "text-5xl",
+      },
+      xl: {
+        radius: 220,
         size: 192,
         border: "border-4",
         blur: "blur-3xl",
         container: "w-[500px] h-[500px]",
+        textSize: "text-6xl",
+      },
+      "2xl": {
+        radius: 260,
+        size: 224,
+        border: "border-4",
+        blur: "blur-3xl",
+        container: "w-[600px] h-[600px]",
+        textSize: "text-7xl",
       },
     }[viewport];
   }, [viewport]);
@@ -107,18 +127,19 @@ export const MainBanner: React.FC = () => {
   useEffect(() => {
     const animate = () => {
       setCurrentFood((prev) => (prev + 1) % foodItems.length);
-      animationRef.current = requestAnimationFrame(() =>
-        setTimeout(animate, 3000)
-      );
+      timeoutRef.current = setTimeout(() => {
+        animationRef.current = requestAnimationFrame(animate);
+      }, 3000);
     };
 
-    animationRef.current = requestAnimationFrame(() =>
-      setTimeout(animate, 3000)
-    );
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, [foodItems.length]);
@@ -126,19 +147,22 @@ export const MainBanner: React.FC = () => {
   const current = foodItems[currentFood];
 
   return (
-    <div className="relative max-h-screen bg-black overflow-hidden">
+    <div className="relative w-full min-h-screen bg-black overflow-hidden">
+      {/* Background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 sm:top-20 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 lg:w-72 lg:h-72 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-10 left-10 sm:top-20 sm:left-20 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 xl:w-80 xl:h-80 2xl:w-96 2xl:h-96 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
         <div
-          className="absolute bottom-10 right-10 sm:bottom-20 sm:right-20 w-40 h-40 sm:w-56 sm:h-56 lg:w-96 lg:h-96 bg-gradient-to-r from-pink-400 to-red-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
+          className="absolute bottom-10 right-10 sm:bottom-20 sm:right-20 w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72 xl:w-96 xl:h-96 2xl:w-112 2xl:h-112 bg-gradient-to-r from-pink-400 to-red-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
           style={{ animationDelay: "2s" }}
         ></div>
       </div>
 
-      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between min-h-screen px-4 sm:px-6 lg:px-16 py-8 lg:py-0">
-        <div className="flex-1 max-w-2xl text-center lg:text-left mb-8 lg:mb-0">
-          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-bold text-white leading-tight">
+      {/* Content */}
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-12 lg:py-0 gap-8 lg:gap-16 xl:gap-24 2xl:gap-32">
+        {/* Text content */}
+        <div className="flex-1 max-w-2xl lg:max-w-none text-center lg:text-left">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8 xl:space-y-10">
+            <h1 className={`${vpConfig.textSize} md:text-6xl xl:text-7xl 2xl:text-8xl font-bold text-white leading-tight`}>
               Taste the{" "}
               <span
                 className={`bg-gradient-to-r ${current.color} bg-clip-text text-transparent animate-pulse block sm:inline`}
@@ -147,18 +171,20 @@ export const MainBanner: React.FC = () => {
               </span>
             </h1>
 
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 font-light">
+            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-gray-300 font-light">
               {current.description}
             </p>
 
-            <p className="text-sm sm:text-base lg:text-lg text-gray-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-400 max-w-lg lg:max-w-xl xl:max-w-2xl leading-relaxed mx-auto lg:mx-0">
               Experience culinary excellence with our selection of world-class
               dishes.
             </p>
           </div>
         </div>
-        <div className="flex-1 relative w-full max-w-md sm:max-w-lg lg:max-w-none">
-          <div className={`relative mx-auto ${vpConfig.container}`}>
+
+        {/* Circular carousel */}
+        <div className="flex-1 relative w-full max-w-md sm:max-w-lg lg:max-w-none flex justify-center">
+          <div className={`relative ${vpConfig.container}`}>
             <div
               className="absolute inset-0 transition-transform duration-1000 ease-in-out will-change-transform"
               style={{

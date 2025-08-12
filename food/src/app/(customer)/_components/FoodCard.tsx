@@ -1,4 +1,3 @@
-import React from "react";
 import { AddToCard } from "./AddToCard";
 import { FoodsType } from "./Foods";
 
@@ -8,7 +7,7 @@ type FoodCardProps = {
 
 export const FoodCard = ({ food }: FoodCardProps) => {
   return (
-    <div className="w-full max-w-[400px] h-auto p-3 sm:p-4 bg-white rounded-2xl md:rounded-[20px] flex flex-col gap-3 sm:gap-4 md:gap-5 relative shadow-md hover:shadow-lg transition-shadow">
+    <div className="w-full max-w-[400px] min-w-[280px] h-auto p-3 sm:p-4 bg-white rounded-2xl md:rounded-[20px] flex flex-col gap-3 sm:gap-4 md:gap-5 relative shadow-md hover:shadow-lg transition-shadow mx-auto">
       <div className="relative overflow-hidden rounded-xl aspect-[1.9/1]">
         <img
           src={food?.image}

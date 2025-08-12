@@ -61,7 +61,7 @@ export const Foods = ({
           </button>
         </div>
       ) : foods.length > 0 ? (
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-[54px] max-w-5xl mx-right">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-6 sm:mt-8 md:mt-[54px] max-w-5xl mr-auto">
   {foods.map((food) => (
     <FoodCard food={food} key={food._id} />
   ))}

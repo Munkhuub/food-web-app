@@ -40,9 +40,8 @@ export default function Home() {
     setSelectedCategory("");
   };
 
-
   return (
-    <div className="w-full overflow-x-hidden">
+    <div className="w-full">
       <div className="w-full mx-auto relative">
         <Header />
         <MainBanner />

@@ -6,7 +6,7 @@ import { useAuth } from "@/app/_providers/AuthProvider";
 import { UserProfile } from "./UserProfile";
 
 export const Header = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   return (
     <header className="w-full bg-[#18181B] px-4 sm:px-6 md:px-8 lg:px-10 py-3">
@@ -41,7 +41,12 @@ export const Header = () => {
 
           <CartDetail />
 
-          {user ? (
+          {loading ? (
+            <div className="flex gap-2 sm:gap-3">
+              <div className="w-16 sm:w-20 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="w-16 sm:w-20 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+          ) : user ? (
             <UserProfile />
           ) : (
             <div className="flex gap-2 sm:gap-3">

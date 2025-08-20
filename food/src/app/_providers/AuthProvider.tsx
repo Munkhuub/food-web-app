@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createContext } from "react";
@@ -38,9 +38,8 @@ type AuthContextType = {
 const AuthContext = createContext({} as AuthContextType);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const router = useRouter();
   const [user, setUser] = useState<User>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const signIn = async ({
     email,
@@ -50,18 +49,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     password: string;
   }) => {
     try {
+      setLoading(true);
       const { data } = await api.post("/auth/signin", {
         email,
         password,
       });
       localStorage.setItem("token", data.token);
+      setAuthToken(data.token);
       setUser(data.user);
-
-      router.push("/");
+      toast.success("Successfully signed in!");
     } catch (error) {
       console.error("Signin error:", error);
       toast.error("Failed to sign in");
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,15 +75,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     password: string;
   }) => {
     try {
+      setLoading(true);
       const { data } = await api.post("/auth/signup", {
         email,
         password,
       });
       localStorage.setItem("token", data.token);
+      setAuthToken(data.token);
       setUser(data.user);
-      router.push("/signin");
-    } catch {
+      toast.success("Account created successfully!");
+    } catch (error) {
+      console.error("Signup error:", error);
       toast.error("Failed to sign up");
+      throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,15 +97,19 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     localStorage.removeItem("token");
     setAuthToken(null);
     setUser(undefined);
+    toast.success("Signed out successfully");
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     setAuthToken(token);
     const getUser = async () => {
-      setLoading(true);
       try {
         const { data } = await api.get("/auth/me", {
           headers: {
@@ -115,13 +127,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     getUser();
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{ user, signIn, signUp, signOut, loading, setUser }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    setUser,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

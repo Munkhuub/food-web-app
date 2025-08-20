@@ -20,12 +20,10 @@ interface User {
 }
 
 export const UserProfile: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
-
-  console.log("UserProfile rendered with user:", user);
 
   useEffect(() => {
     if (user) {
@@ -38,6 +36,14 @@ export const UserProfile: React.FC = () => {
     signOut();
     setOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse flex items-center justify-center">
+        <User className="w-5 h-5 text-gray-400" />
+      </div>
+    );
+  }
 
   if (!user) {
     return null;
@@ -55,7 +61,14 @@ export const UserProfile: React.FC = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[320px] p-0 overflow-hidden bg-white shadow-2xl border-0">
+      <DialogContent
+        className="sm:max-w-[320px] p-0 overflow-hidden bg-white shadow-2xl border-0"
+        aria-describedby="dialog-description"
+      >
+        <div id="dialog-description" className="sr-only">
+          User profile information and settings
+        </div>
+
         <DialogHeader className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
           <DialogTitle className="text-left">
             <div className="flex gap-3 items-center">

@@ -1,12 +1,14 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useContext, useState, useCallback } from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
 import { StepContext } from "../../StepProvider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuth } from "@/app/_providers/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -15,8 +17,16 @@ export const loginSchema = z.object({
 
 export const Login = () => {
   const context = useContext(StepContext);
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
 
   if (!context) {
     throw new Error("Login must be used within a StepProvider");
@@ -47,6 +57,7 @@ export const Login = () => {
           email: data.email,
           password: data.password,
         });
+        // The AuthProvider will handle the redirect via the useEffect above
       } catch (error) {
         console.error("Login failed", error);
         setIsSubmitting(false);
@@ -116,6 +127,11 @@ export const Login = () => {
                   aria-invalid={!!formState.errors.password}
                 />
               </div>
+              {formState.errors.password && (
+                <p className="text-destructive text-sm">
+                  {formState.errors.password.message}
+                </p>
+              )}
             </div>
           </div>
 

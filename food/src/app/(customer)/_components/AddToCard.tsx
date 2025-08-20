@@ -28,74 +28,106 @@ export const AddToCard = ({ food }: AddToCardProps) => {
     setQuantity((prev) => prev + 1);
   };
 
+  // Reset quantity when dialog closes
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setQuantity(1);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
-          className="absolute rounded-full right-2 sm:right-4 md:right-9 bottom-[100px] xs:bottom-[110px] sm:bottom-[120px] md:bottom-[136px] bg-white size-8 sm:size-9 md:size-11"
-          size="icon"
+          className="w-full rounded-lg bg-red-500 hover:bg-red-600 text-white h-10 sm:h-11"
+          size="default"
         >
-          <Plus className="text-[#EF4444] size-3 sm:size-4" />
+          <Plus className="size-4 mr-2" />
+          Add to Cart
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-[95%] sm:max-w-md md:max-w-2xl lg:max-w-4xl">
+      <DialogContent className="w-[95%] sm:max-w-md md:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-          <div className="relative w-full h-48 sm:h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden">
+          {/* Image Section */}
+          <div className="relative w-full md:w-1/2 aspect-square md:aspect-[4/3] rounded-xl overflow-hidden bg-gray-100">
             <img
               src={food?.image}
               alt={food?.foodName}
-              className="rounded-xl object-fit"
+              className="w-full h-full object-cover"
             />
           </div>
 
-          <div className="flex flex-col justify-between gap-4 md:gap-0">
-            <div className="mt-0 md:mt-4 lg:mt-9 flex flex-col gap-2 md:gap-3">
-              <DialogTitle className="text-xl sm:text-2xl md:text-3xl text-[#EF4444]">
+          {/* Content Section */}
+          <div className="flex flex-col justify-between gap-4 md:gap-6 md:w-1/2">
+            {/* Header */}
+            <div className="flex flex-col gap-2 md:gap-3">
+              <DialogTitle className="text-xl sm:text-2xl md:text-3xl text-red-500 font-semibold">
                 {food?.foodName}
               </DialogTitle>
-              <p className="text-sm sm:text-base">{food?.ingredients}</p>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                {food?.ingredients}
+              </p>
+              <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900">
+                ${food?.price.toFixed(2)}{" "}
+                <span className="text-sm text-gray-500 font-normal">each</span>
+              </p>
             </div>
 
+            {/* Controls Section */}
             <div className="flex flex-col gap-4 sm:gap-6">
-              <div className="flex justify-between items-center">
+              {/* Quantity Controls */}
+              <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="text-sm sm:text-base">Total price</p>
-                  <p className="text-xl sm:text-2xl font-semibold">
-                    ${(food?.price * quantity).toFixed(2)}
+                  <p className="text-sm text-gray-600">Quantity</p>
+                  <p className="text-lg font-medium">
+                    {quantity} item{quantity !== 1 ? "s" : ""}
                   </p>
                 </div>
                 <div className="flex gap-2 sm:gap-3 items-center">
                   <Button
                     size="icon"
-                    className="rounded-full bg-white border border-[#E4E4E7] size-8 sm:size-9"
+                    variant="outline"
+                    className="rounded-full size-9 sm:size-10"
                     onClick={minusFood}
+                    disabled={quantity <= 1}
                   >
-                    <Minus className="text-black size-3 sm:size-4" />
+                    <Minus className="size-4" />
                   </Button>
-                  <p className="text-base sm:text-lg min-w-[20px] text-center">
+                  <span className="text-lg font-semibold min-w-[30px] text-center">
                     {quantity}
-                  </p>
+                  </span>
                   <Button
                     size="icon"
-                    className="rounded-full bg-white border border-black size-8 sm:size-9"
+                    variant="outline"
+                    className="rounded-full size-9 sm:size-10"
                     onClick={plusFood}
                   >
-                    <Plus className="text-black size-3 sm:size-4" />
+                    <Plus className="size-4" />
                   </Button>
                 </div>
               </div>
 
-              <DialogFooter className="mt-2 sm:mt-0">
+              {/* Total Price */}
+              <div className="p-4 bg-red-50 rounded-lg border border-red-100">
+                <p className="text-sm text-red-600 font-medium">Total Price</p>
+                <p className="text-2xl sm:text-3xl font-bold text-red-600">
+                  ${(food?.price * quantity).toFixed(2)}
+                </p>
+              </div>
+
+              {/* Action Button */}
+              <DialogFooter className="mt-2">
                 <Button
                   type="submit"
-                  className="w-full rounded-full h-10 sm:h-11 bg-black"
+                  className="w-full rounded-lg h-12 bg-red-500 hover:bg-red-600 text-white font-semibold text-base"
                   onClick={() => {
                     addToCart(food, quantity);
                     setOpen(false);
                   }}
                 >
-                  Add to cart
+                  Add {quantity} item{quantity !== 1 ? "s" : ""} to cart
                 </Button>
               </DialogFooter>
             </div>

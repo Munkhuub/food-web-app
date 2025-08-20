@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     localStorage.removeItem("token");
     setAuthToken(null);
     setUser(undefined);
-    toast.success("Signed out successfully");
+    toast.success("Signed out successfully.");
   };
 
   useEffect(() => {
